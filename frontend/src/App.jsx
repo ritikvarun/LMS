@@ -36,7 +36,7 @@ import AdminFreeCourses from './pages/admin/AdminFreeCourses'
 import AdminPaidCourses from './pages/admin/AdminPaidCourses'
 import ManageBooks from './pages/admin/ManageBooks'
 
-export const serverUrl = "http://localhost:8000"
+export const serverUrl = (import.meta.env.VITE_SERVER_URL || "http://localhost:8000").replace(/\/+$/, "");
 
 function App() {
   
