@@ -23,9 +23,10 @@ app.use(express.json())
 app.use(cookieParser())
 app.use("/public", express.static("public"))
 
-// Dynamic CORS configuration allowing localhost, configured FRONTEND_URL, and all Vercel deployment domains
+// Dynamic CORS configuration allowing localhost, local IP, FRONTEND_URL, Vercel, and Render domains
 const allowedOrigins = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "http://localhost:3000",
     "http://localhost:4173",
     process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/+$/, "") : null
@@ -36,7 +37,8 @@ app.use(cors({
         if (!origin) return callback(null, true);
         if (
             allowedOrigins.includes(origin) ||
-            /^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/.test(origin)
+            /^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/.test(origin) ||
+            /^https:\/\/[a-zA-Z0-9_-]+\.onrender\.com$/.test(origin)
         ) {
             return callback(null, true);
         }
