@@ -88,11 +88,8 @@ function SignUp() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/40 to-purple-50/30 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       
       {/* Container */}
-      <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-        
-        {/* Left Form */}
-        <div className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-between">
-          <div>
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 p-8 sm:p-10">
+        <div>
             {/* Brand */}
             <div 
               className="cursor-pointer mb-8"
@@ -258,43 +255,7 @@ function SignUp() {
             </button>
           </div>
         </div>
-
-        {/* Right Banner */}
-        <div className="w-full md:w-1/2 bg-gradient-to-br from-gray-950 via-gray-900 to-indigo-950 text-white p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute -top-10 -right-10 w-60 h-60 bg-indigo-500/20 blur-3xl rounded-full" />
-          <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-purple-500/20 blur-3xl rounded-full" />
-
-          <div className="relative z-10">
-            <span className="px-3 py-1 bg-white/10 border border-white/15 rounded-full text-xs font-semibold text-indigo-300">
-              Start Learning Free
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-6 leading-snug">
-              Unlock Unlimited Learning Opportunities.
-            </h2>
-            <p className="text-sm text-gray-300 mt-4 leading-relaxed font-light">
-              Get immediate access to course materials, interactive live classes with mentors, and personal learning roadmaps.
-            </p>
-          </div>
-
-          <div className="relative z-10 pt-10 border-t border-white/10 mt-8 space-y-3 text-xs text-gray-300 font-medium">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">✓</span>
-              <span>100% Free registration</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">✓</span>
-              <span>Lifetime access to enrolled courses</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">✓</span>
-              <span>Verified certificates of completion</span>
-            </div>
-          </div>
-        </div>
-
       </div>
-
-    </div>
   );
 }
 

@@ -71,11 +71,8 @@ function Login() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/40 to-purple-50/30 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       
       {/* Auth Card Container */}
-      <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-        
-        {/* Left Form Section */}
-        <div className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-between">
-          <div>
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 p-8 sm:p-10">
+        <div>
             {/* Logo & Header */}
             <div 
               className="cursor-pointer mb-8"
@@ -196,42 +193,7 @@ function Login() {
             </button>
           </div>
         </div>
-
-        {/* Right Hero / Branding Banner */}
-        <div className="w-full md:w-1/2 bg-gradient-to-br from-gray-950 via-gray-900 to-indigo-950 text-white p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute -top-10 -right-10 w-60 h-60 bg-indigo-500/20 blur-3xl rounded-full" />
-          <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-purple-500/20 blur-3xl rounded-full" />
-
-          <div className="relative z-10">
-            <span className="px-3 py-1 bg-white/10 border border-white/15 rounded-full text-xs font-semibold text-indigo-300">
-              Transform Your Learning
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-6 leading-snug">
-              Master Next-Gen Technologies with Industry Leaders.
-            </h2>
-            <p className="text-sm text-gray-300 mt-4 leading-relaxed font-light">
-              Join thousands of ambitious learners leveling up in Web Development, Machine Learning, and Cloud Architecture.
-            </p>
-          </div>
-
-          <div className="relative z-10 pt-10 border-t border-white/10 mt-8">
-            <div className="flex items-center gap-4">
-              <div className="flex -space-x-2 overflow-hidden">
-                <span className="inline-block h-8 w-8 rounded-full ring-2 ring-indigo-500 bg-indigo-600 text-xs font-bold flex items-center justify-center text-white">R</span>
-                <span className="inline-block h-8 w-8 rounded-full ring-2 ring-indigo-500 bg-purple-600 text-xs font-bold flex items-center justify-center text-white">A</span>
-                <span className="inline-block h-8 w-8 rounded-full ring-2 ring-indigo-500 bg-emerald-600 text-xs font-bold flex items-center justify-center text-white">P</span>
-              </div>
-              <p className="text-xs text-gray-300 font-medium">
-                Rated <span className="text-amber-400 font-bold">4.9/5</span> by 10,000+ graduates
-              </p>
-            </div>
-          </div>
-
-        </div>
-
       </div>
-
-    </div>
   );
 }
 
