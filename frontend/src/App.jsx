@@ -3,7 +3,8 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
-import { ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ForgotPassword from './pages/ForgotPassword'
 import getCurrentUser from './customHooks/getCurrentUser'
 import { useSelector } from 'react-redux'
@@ -51,7 +52,18 @@ function App() {
   return (
     <>
     
-      <ToastContainer />
+      <ToastContainer 
+        position="top-right"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <ScrollToTop/>
       <Routes>
         <Route path='/' element={<Home/>}/>

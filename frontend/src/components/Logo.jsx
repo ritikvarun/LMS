@@ -48,13 +48,13 @@ function Logo({
       {/* Brand Typography */}
       {showText && (
         <div className="flex flex-col">
-          <span className={`font-extrabold text-lg sm:text-xl tracking-tight leading-none ${
+          <span className={`font-extrabold text-base sm:text-xl tracking-tight leading-none ${
             dark ? "text-white" : "text-gray-900"
           }`}>
             Code<span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">Crafters</span>
           </span>
           {tagline && (
-            <span className={`text-[9.5px] font-bold tracking-wider uppercase mt-1 ${
+            <span className={`text-[8.5px] sm:text-[9.5px] font-bold tracking-wider uppercase mt-1 hidden sm:block ${
               dark ? "text-indigo-300/80" : "text-gray-400"
             }`}>
               {tagline}

@@ -60,7 +60,9 @@ function Login() {
       navigate("/");
       toast.success("Logged in with Google successfully!");
     } catch (error) {
-      console.log(error);
+      if (error?.code === "auth/popup-closed-by-user" || error?.code === "auth/cancelled-popup-request") {
+        return;
+      }
       toast.error(error?.response?.data?.message || "Google login failed");
     }
   };

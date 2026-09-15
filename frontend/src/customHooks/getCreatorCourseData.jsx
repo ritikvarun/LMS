@@ -21,7 +21,6 @@ const getCreatorCourseData = () => {
         const result = await axios.get(serverUrl + "/api/course/getcreatorcourses", { withCredentials: true })
         dispatch(setCreatorCourseData(result.data))
       } catch (error) {
-        console.log("Error fetching creator courses:", error)
         // Do not display toast error if token is missing/expired or during logout
         if (error.response?.status !== 400 && error.response?.status !== 401) {
           toast.error(error.response?.data?.message || "Failed to get creator courses")

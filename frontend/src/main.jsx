@@ -6,6 +6,14 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from './redux/store.js'
 
+// Keep console pristine in production
+if (import.meta.env.PROD) {
+  console.log = () => {};
+  console.info = () => {};
+  console.debug = () => {};
+  console.warn = () => {};
+}
+
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

@@ -77,7 +77,9 @@ function SignUp() {
       navigate("/");
       toast.success("Signed up with Google successfully!");
     } catch (error) {
-      console.log(error);
+      if (error?.code === "auth/popup-closed-by-user" || error?.code === "auth/cancelled-popup-request") {
+        return;
+      }
       toast.error(error?.response?.data?.message || "Google signup failed");
     }
   };

@@ -111,7 +111,7 @@ function Nav() {
 
   return (
     <header className="fixed top-0 left-0 w-full min-h-[72px] z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/70 transition-all duration-300">
-      <div className="max-w-7xl mx-auto h-[72px] px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 lg:gap-6">
+      <div className="max-w-7xl mx-auto h-[72px] px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 lg:gap-6">
         
         {/* 1. Left: Brand Logo */}
         <div 
@@ -218,7 +218,7 @@ function Nav() {
           {/* Mobile Search Icon Toggle (< sm only) */}
           <button
             onClick={() => setShowMobileSearch((prev) => !prev)}
-            className="sm:hidden p-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition cursor-pointer"
+            className="sm:hidden p-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition cursor-pointer shrink-0"
             aria-label="Toggle search"
             title="Search"
           >
@@ -228,16 +228,16 @@ function Nav() {
           {/* User Profile / Auth Area */}
           <div ref={dropdownRef}>
             {!userData ? (
-              <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                 <button 
                   onClick={() => navigate("/login")}
-                  className="px-3 sm:px-3.5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 rounded-xl transition cursor-pointer"
+                  className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 rounded-xl transition cursor-pointer shrink-0"
                 >
                   Sign In
                 </button>
                 <button 
                   onClick={() => navigate("/signup")}
-                  className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 rounded-xl shadow-xs hover:shadow-md transition-all cursor-pointer"
+                  className="hidden sm:inline-flex px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 rounded-xl shadow-xs hover:shadow-md transition-all cursor-pointer shrink-0"
                 >
                   Get Started
                 </button>
@@ -337,7 +337,7 @@ function Nav() {
           {/* Hamburger Menu Toggle (Shown on screens < lg) */}
           <button
             onClick={() => setShowHam(true)}
-            className="lg:hidden p-2 rounded-xl text-gray-700 hover:bg-gray-100 focus:outline-none transition cursor-pointer ml-0.5"
+            className="lg:hidden p-2 rounded-xl text-gray-700 hover:bg-gray-100 focus:outline-none transition cursor-pointer ml-0.5 shrink-0"
             aria-label="Open menu"
           >
             <HiMenuAlt3 className="w-6 h-6" />
