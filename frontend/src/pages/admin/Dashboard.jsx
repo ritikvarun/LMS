@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { serverUrl } from '../../App';
+import { setCreatorCourseData } from '../../redux/courseSlice';
 import AdminLayout from './AdminLayout';
 import { 
   BarChart, 
@@ -44,38 +45,44 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 function Dashboard() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
   const { creatorCourseData } = useSelector((state) => state.course);
 
-  const [freeCoursesList, setFreeCoursesList] = useState([]);
   const [hubTab, setHubTab] = useState("paid"); // 'paid' or 'free'
 
+  // Always fetch fresh creator courses on mount to ensure real-time accuracy
   useEffect(() => {
-    const fetchFree = async () => {
+    const fetchCreatorCourses = async () => {
       try {
-        const res = await axios.get(`${serverUrl}/api/course/free-courses`, { withCredentials: true });
-        setFreeCoursesList(res.data?.courses || []);
+        const res = await axios.get(`${serverUrl}/api/course/getcreatorcourses`, { withCredentials: true });
+        if (Array.isArray(res.data)) {
+          dispatch(setCreatorCourseData(res.data));
+        }
       } catch (err) {
-        // silent
+        console.log("Error loading dashboard courses:", err);
       }
     };
-    fetchFree();
-  }, []);
+    fetchCreatorCourses();
+  }, [dispatch]);
 
-  // Key LMS Metrics
+  // Key LMS Metrics based strictly on creator's actual courses
   const allCourses = Array.isArray(creatorCourseData) ? creatorCourseData : [];
   const totalCourses = allCourses.length;
   const paidCoursesList = allCourses.filter(
     (c) => Number(c.price) > 0 && c.isFree !== true && c.isFree !== "true"
   );
   const totalPaidCourses = paidCoursesList.length;
-  const totalFreeCourses = freeCoursesList.length || allCourses.filter(c => c.isFree || Number(c.price) <= 0).length;
-  const totalStudents = allCourses.reduce((sum, course) => sum + (course.enrolledStudents?.length || 0), 0) || 0;
+  const freeCoursesList = allCourses.filter(
+    (c) => c.isFree === true || c.isFree === "true" || !c.price || Number(c.price) <= 0
+  );
+  const totalFreeCourses = freeCoursesList.length;
+  const totalStudents = allCourses.reduce((sum, course) => sum + (course.enrolledStudents?.length || 0), 0);
   const totalEarnings = allCourses.reduce((sum, course) => {
     const studentCount = course.enrolledStudents?.length || 0;
     const courseRevenue = course.price ? course.price * studentCount : 0;
     return sum + courseRevenue;
-  }, 0) || 0;
+  }, 0);
 
   // Chart Data
   const chartData = creatorCourseData?.map(course => ({
@@ -84,7 +91,7 @@ function Dashboard() {
     students: course.enrolledStudents?.length || 0,
   })) || [];
 
-  // Extract real enrolled students from creatorCourseData if available
+  // Extract real enrolled students from creatorCourseData
   const realEnrollments = [];
   (creatorCourseData || []).forEach(course => {
     (course.enrolledStudents || []).forEach(student => {
@@ -104,61 +111,7 @@ function Dashboard() {
     });
   });
 
-  // Fallback demo enrollments with 100% authentic LMS education details
-  const fallbackEnrollments = [
-    {
-      id: "enr_1",
-      initial: "R",
-      name: "Ritik Varun",
-      email: "ritikvarun64@gmail.com",
-      courseName: "Complete Full-Stack MERN Mastery",
-      price: 1339,
-      isFree: false,
-      enrolledAt: "Today"
-    },
-    {
-      id: "enr_2",
-      initial: "A",
-      name: "Amit Kumar",
-      email: "amit.kumar24@gmail.com",
-      courseName: "RWA 10th Bihar Board Toppers बैच",
-      price: 0,
-      isFree: true,
-      enrolledAt: "Yesterday"
-    },
-    {
-      id: "enr_3",
-      initial: "P",
-      name: "Pooja Sharma",
-      email: "pooja.sharma99@gmail.com",
-      courseName: "बिहार दरोगा बहाली 2025 (दरोगा बैच)",
-      price: 0,
-      isFree: true,
-      enrolledAt: "2 days ago"
-    },
-    {
-      id: "enr_4",
-      initial: "V",
-      name: "Vishnu Sikarwar",
-      email: "vsikarwar234@gmail.com",
-      courseName: "SSC FOUNDATION BATCH (नायक बैच)",
-      price: 0,
-      isFree: true,
-      enrolledAt: "3 days ago"
-    },
-    {
-      id: "enr_5",
-      initial: "S",
-      name: "Saurabh Verma",
-      email: "saurabh.v@gmail.com",
-      courseName: "React 19 & Next.js Pro",
-      price: 499,
-      isFree: false,
-      enrolledAt: "4 days ago"
-    }
-  ];
-
-  const displayEnrollments = realEnrollments.length > 0 ? realEnrollments.slice(0, 6) : fallbackEnrollments;
+  const displayEnrollments = realEnrollments.slice(0, 6);
 
   return (
     <AdminLayout activeTab="dashboard">
@@ -218,7 +171,7 @@ function Dashboard() {
             <div>
               <p className="text-xs font-semibold text-gray-500">Total Courses</p>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-0.5">
-                {totalCourses > 0 ? totalCourses : 5}
+                {totalCourses}
               </h2>
             </div>
           </div>
@@ -250,7 +203,7 @@ function Dashboard() {
             <div>
               <p className="text-xs font-semibold text-gray-500">Free Courses</p>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-emerald-700 mt-0.5">
-                {totalFreeCourses > 0 ? totalFreeCourses : 3}
+                {totalFreeCourses}
               </h2>
             </div>
           </div>
@@ -263,7 +216,7 @@ function Dashboard() {
             <div>
               <p className="text-xs font-semibold text-gray-500">Enrolled Students</p>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-0.5">
-                {totalStudents > 0 ? totalStudents : 2}
+                {totalStudents}
               </h2>
             </div>
           </div>
@@ -310,47 +263,57 @@ function Dashboard() {
 
           {/* Student Enrollments Rows */}
           <div className="divide-y divide-gray-100">
-            {displayEnrollments.map((student) => (
-              <div 
-                key={student.id} 
-                className="py-4 first:pt-2 last:pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50/70 p-2 rounded-2xl transition"
-              >
-                {/* Left: Avatar initial circle + Student Name + Course */}
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-700 font-extrabold text-sm flex items-center justify-center shrink-0 border border-indigo-100">
-                    {student.initial}
+            {displayEnrollments.length > 0 ? (
+              displayEnrollments.map((student) => (
+                <div 
+                  key={student.id} 
+                  className="py-4 first:pt-2 last:pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50/70 p-2 rounded-2xl transition"
+                >
+                  {/* Left: Avatar initial circle + Student Name + Course */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-700 font-extrabold text-sm flex items-center justify-center shrink-0 border border-indigo-100">
+                      {student.initial}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-900 leading-tight">
+                        {student.name}
+                      </h4>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {student.email} • Enrolled in <span className="text-gray-800 font-semibold">{student.courseName}</span>
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 leading-tight">
-                      {student.name}
-                    </h4>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {student.email} • Enrolled in <span className="text-gray-800 font-semibold">{student.courseName}</span>
-                    </p>
-                  </div>
-                </div>
 
-                {/* Right: Price + LMS Enrollment Badge */}
-                <div className="flex items-center gap-4 self-end sm:self-center">
-                  <div className="text-right">
-                    <span className="font-extrabold text-sm text-gray-900">
-                      {student.price > 0 ? `₹${student.price}` : "Free"}
+                  {/* Right: Price + LMS Enrollment Badge */}
+                  <div className="flex items-center gap-4 self-end sm:self-center">
+                    <div className="text-right">
+                      <span className="font-extrabold text-sm text-gray-900">
+                        {student.price > 0 ? `₹${student.price}` : "Free"}
+                      </span>
+                      <p className="text-[10px] text-gray-400 font-semibold">
+                        {student.isFree ? "Free Enrollment" : "Online Gateway"}
+                      </p>
+                    </div>
+
+                    <span className={`px-3 py-1 text-[11px] font-bold rounded-full border ${
+                      student.isFree
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-indigo-50 text-indigo-700 border-indigo-200"
+                    }`}>
+                      {student.isFree ? "Free Access" : "Enrolled (Pro)"}
                     </span>
-                    <p className="text-[10px] text-gray-400 font-semibold">
-                      {student.isFree ? "Free Enrollment" : "Online Gateway"}
-                    </p>
                   </div>
-
-                  <span className={`px-3 py-1 text-[11px] font-bold rounded-full border ${
-                    student.isFree
-                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                      : "bg-indigo-50 text-indigo-700 border-indigo-200"
-                  }`}>
-                    {student.isFree ? "Free Access" : "Enrolled (Pro)"}
-                  </span>
                 </div>
+              ))
+            ) : (
+              <div className="py-12 text-center text-gray-400 space-y-2">
+                <FiUsers className="w-10 h-10 mx-auto text-gray-300" />
+                <p className="text-sm font-semibold text-gray-600">No Student Enrollments Yet</p>
+                <p className="text-xs text-gray-400 max-w-sm mx-auto">
+                  When students enroll in your courses, their names, courses, and receipts will appear here.
+                </p>
               </div>
-            ))}
+            )}
           </div>
 
         </div>

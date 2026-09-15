@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { serverUrl } from '../../App';
+import { setCreatorCourseData } from '../../redux/courseSlice';
 import AdminLayout from './AdminLayout';
 import { toast } from 'react-toastify';
 import { 
@@ -20,6 +22,8 @@ import emptyImg from '../../assets/empty.jpg';
 
 function AdminFreeCourses() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { creatorCourseData } = useSelector((state) => state.course);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,8 +31,13 @@ function AdminFreeCourses() {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${serverUrl}/api/course/free-courses`, { withCredentials: true });
-      setCourses(res.data?.courses || []);
+      const res = await axios.get(`${serverUrl}/api/course/getcreatorcourses`, { withCredentials: true });
+      const allCreatorCourses = Array.isArray(res.data) ? res.data : [];
+      dispatch(setCreatorCourseData(allCreatorCourses));
+      const freeOnly = allCreatorCourses.filter(
+        (c) => c.isFree === true || c.isFree === "true" || !c.price || Number(c.price) <= 0
+      );
+      setCourses(freeOnly);
     } catch (err) {
       console.error("Error fetching free courses:", err);
       toast.error("Failed to load free courses");
@@ -51,6 +60,8 @@ function AdminFreeCourses() {
       await axios.delete(`${serverUrl}/api/course/removecourse/${courseId}`, { withCredentials: true });
       toast.success("Course deleted successfully");
       setCourses(courses.filter((c) => c._id !== courseId));
+      const updatedCreator = (creatorCourseData || []).filter((c) => c._id !== courseId);
+      dispatch(setCreatorCourseData(updatedCreator));
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to delete course");
     }
