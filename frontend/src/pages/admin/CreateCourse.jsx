@@ -51,23 +51,6 @@ const CreateCourse = () => {
     }
   };
 
-  const categories = [
-    "Bihar Board 10th RWA",
-    "बिहार दरोगा बहाली 2025 (दरोगा बैच)",
-    "RWA SSC EXAMS",
-    "Haryana CET",
-    "11th Class (Topper)",
-    "Web Development",
-    "App Development",
-    "UI UX Designing",
-    "AI/ML",
-    "AI Tools",
-    "Data Science",
-    "Data Analytics",
-    "Ethical Hacking",
-    "Others",
-  ];
-
   return (
     <AdminLayout activeTab="createcourses">
       <div className="max-w-2xl mx-auto space-y-6">
@@ -161,17 +144,14 @@ const CreateCourse = () => {
               </label>
               <div className="relative flex items-center">
                 <FiLayers className="absolute left-3.5 text-gray-400 text-base pointer-events-none" />
-                <select
+                <input
+                  type="text"
                   required
+                  placeholder="Enter subject category (e.g. Bihar Board 10th, SSC, Web Dev)"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition cursor-pointer"
-                >
-                  <option value="">Select subject category</option>
-                  {categories.map((cat, idx) => (
-                    <option key={idx} value={cat}>{cat}</option>
-                  ))}
-                </select>
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
+                />
               </div>
             </div>
 

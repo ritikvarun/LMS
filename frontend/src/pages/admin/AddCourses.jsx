@@ -179,23 +179,6 @@ function AddCourses() {
     }
   };
 
-  const categories = [
-    "Web Development",
-    "App Development",
-    "UI UX Designing",
-    "AI/ML",
-    "AI Tools",
-    "Data Science",
-    "Data Analytics",
-    "Ethical Hacking",
-    "Bihar Board 10th RWA",
-    "बिहार दरोगा बहाली 2025 (दरोगा बैच)",
-    "RWA SSC EXAMS",
-    "Haryana CET",
-    "11th Class (Topper)",
-    "Others",
-  ];
-
   if (pageLoading && !selectedCourse) {
     return (
       <AdminLayout activeTab="courses">
@@ -432,16 +415,13 @@ function AddCourses() {
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
                   Category
                 </label>
-                <select
+                <input
+                  type="text"
+                  placeholder="Enter category (e.g. Web Development, SSC, Bihar Board)"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((c, i) => (
-                    <option key={i} value={c}>{c}</option>
-                  ))}
-                </select>
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                />
               </div>
 
               {/* Level */}
