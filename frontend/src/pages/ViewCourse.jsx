@@ -472,151 +472,80 @@ function ViewCourse() {
               </button>
             </div>
 
-            {/* Navigation Tabs (Curriculum, Reviews, Mock Tests) */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xs border border-gray-200/80 space-y-6">
-              <div className="flex items-center gap-3 border-b border-gray-200 overflow-x-auto pb-1">
-                <button
-                  onClick={() => setActiveTab("curriculum")}
-                  className={`pb-3 px-3 text-sm font-bold transition-all border-b-2 cursor-pointer shrink-0 ${
-                    activeTab === "curriculum"
-                      ? "border-blue-600 text-blue-600"
-                      : "border-transparent text-gray-500 hover:text-gray-900"
-                  }`}
-                >
-                  Curriculum & Lessons ({selectedCourseData?.lectures?.length || 0})
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("mocktests")}
-                  className={`pb-3 px-3 text-sm font-bold transition-all border-b-2 cursor-pointer shrink-0 flex items-center gap-1.5 ${
-                    activeTab === "mocktests"
-                      ? "border-blue-600 text-blue-600"
-                      : "border-transparent text-gray-500 hover:text-gray-900"
-                  }`}
-                >
-                  <FaFileLines className="text-xs" />
-                  <span>Mock Tests ({mockTests.length})</span>
-                </button>
-              </div>
-
-              {/* Tab 1: Curriculum */}
-              {activeTab === "curriculum" && (
-                <div className="space-y-4">
-                  <p className="text-xs sm:text-sm text-gray-500">
-                    {isEnrolled 
-                      ? "You have full access to all lectures. Click any lecture to open the classroom."
-                      : "All lectures are locked until course purchase. Click 'Buy Now' to unlock the entire course."}
-                  </p>
-
-                  <div className="space-y-3">
-                    {selectedCourseData?.lectures?.length > 0 ? (
-                      selectedCourseData.lectures.map((lecture, index) => {
-                        return (
-                          <div
-                            key={index}
-                            onClick={() => {
-                              if (isEnrolled) {
-                                navigate(`/viewlecture/${courseId}`);
-                              } else {
-                                toast.info("🔒 Course is locked. Please click 'Buy Now' to unlock all lectures.");
-                              }
-                            }}
-                            className={`p-4 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
-                              isEnrolled
-                                ? "hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer bg-white border-gray-200"
-                                : "opacity-80 bg-gray-50/90 border-gray-200 cursor-pointer hover:bg-gray-100/70"
-                            }`}
-                          >
-                            <div className="flex items-center gap-3.5 min-w-0">
-                              <div
-                                className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                                  isEnrolled
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-200 text-gray-500"
-                                }`}
-                              >
-                                {isEnrolled ? (
-                                  <FaPlay className="text-xs ml-0.5" />
-                                ) : (
-                                  <FaLock className="text-xs" />
-                                )}
-                              </div>
-
-                              <div className="truncate">
-                                <h4 className="font-bold text-sm text-gray-900 truncate">
-                                  {index + 1}. {lecture.lectureTitle}
-                                </h4>
-                                <p className="text-xs text-gray-500">
-                                  {isEnrolled
-                                    ? "Unlocked for Enrolled Learner"
-                                    : "Locked • Requires Course Purchase"}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="shrink-0 flex items-center gap-2">
-                              {!isEnrolled && (
-                                <span className="px-2.5 py-1 text-[11px] font-bold text-red-600 bg-red-50 border border-red-100 rounded-md flex items-center gap-1">
-                                  <FaLock className="text-[9px]" /> Locked
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <p className="text-center py-8 text-gray-400 text-sm">No lectures published yet.</p>
-                    )}
+            {/* Enrolled Classroom Access Card */}
+            {isEnrolled && (
+              <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border border-emerald-200/80 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md shrink-0">
+                    <FaPlay className="ml-1" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                      COURSE ENROLLED
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mt-1">
+                      Continue Learning
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-0.5">
+                      Open your structured classroom with video player and topic-wise lectures.
+                    </p>
                   </div>
                 </div>
-              )}
 
+                <button
+                  onClick={() => navigate(`/viewlecture/${courseId}`)}
+                  className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                >
+                  <FaPlay className="text-xs" />
+                  <span>Open Classroom →</span>
+                </button>
+              </div>
+            )}
 
-
-              {/* Tab 3: Mock Tests */}
-              {activeTab === "mocktests" && (
-                <div className="space-y-4">
-                  {mockTests.length === 0 ? (
-                    <div className="text-center py-12 px-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                      <FaFileLines className="text-3xl text-gray-300 mx-auto mb-2" />
-                      <h3 className="font-bold text-gray-800 text-sm">No Mock Tests Available Yet</h3>
-                      <p className="text-xs text-gray-500 mt-1">Tests will be uploaded by the instructor soon.</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {mockTests.map((test) => (
-                        <div
-                          key={test._id}
-                          className="p-4 rounded-2xl border border-gray-200 flex items-center justify-between gap-4 bg-white shadow-xs"
-                        >
-                          <div>
-                            <h4 className="font-bold text-sm text-gray-900">{test.title}</h4>
-                            <p className="text-xs text-gray-500">
-                              {test.timeLimitMinutes} Mins • Pass score: {test.passingScorePercent}%
-                            </p>
-                          </div>
-                          {isEnrolled ? (
-                            <button
-                              onClick={() => navigate(`/test/${courseId}/${test._id}`)}
-                              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition cursor-pointer"
-                            >
-                              Start Test
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => handleEnroll(courseId, userData?._id)}
-                              className="px-4 py-2 bg-gray-100 text-gray-600 font-semibold rounded-xl text-xs transition cursor-pointer"
-                            >
-                              Enroll to Attempt
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+            {/* Mock Tests & Practice Tests (if available) */}
+            {mockTests && mockTests.length > 0 && (
+              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xs border border-gray-200/80 space-y-4">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <FaFileLines className="text-blue-600 text-lg" />
+                    <h3 className="font-extrabold text-lg text-gray-900">
+                      Mock Tests & Test Series ({mockTests.length})
+                    </h3>
+                  </div>
                 </div>
-              )}
-            </div>
+
+                <div className="space-y-3">
+                  {mockTests.map((test) => (
+                    <div
+                      key={test._id}
+                      className="p-4 rounded-2xl border border-gray-200 flex items-center justify-between gap-4 bg-white shadow-xs"
+                    >
+                      <div>
+                        <h4 className="font-bold text-sm text-gray-900">{test.title}</h4>
+                        <p className="text-xs text-gray-500">
+                          {test.timeLimitMinutes} Mins • Pass score: {test.passingScorePercent}%
+                        </p>
+                      </div>
+                      {isEnrolled ? (
+                        <button
+                          onClick={() => navigate(`/test/${courseId}/${test._id}`)}
+                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition cursor-pointer"
+                        >
+                          Start Test
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleEnroll(courseId, userData?._id)}
+                          className="px-4 py-2 bg-gray-100 text-gray-600 font-semibold rounded-xl text-xs transition cursor-pointer"
+                        >
+                          Enroll to Attempt
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Instructor Profile */}
             {creatorData && (
