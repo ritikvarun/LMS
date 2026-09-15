@@ -376,12 +376,19 @@ function ViewCourse() {
           <div className="lg:col-span-7 xl:col-span-8 space-y-8">
 
             {/* Course Big Banner Poster */}
-            <div className="bg-white rounded-3xl p-3 sm:p-4 shadow-sm border border-gray-200/80 overflow-hidden">
-              <div className="aspect-video w-full rounded-2xl overflow-hidden bg-gray-950 relative group">
+            <div 
+              onClick={() => isEnrolled && navigate(`/viewlecture/${courseId}`)}
+              className={`bg-white rounded-3xl p-3 sm:p-4 shadow-sm border border-gray-200/80 overflow-hidden ${
+                isEnrolled ? "cursor-pointer group" : ""
+              }`}
+            >
+              <div className="aspect-video w-full rounded-2xl overflow-hidden bg-gray-950 relative">
                 <img
                   src={selectedCourseData?.thumbnail || img}
                   alt={selectedCourseData?.title}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-transform duration-500 ${
+                    isEnrolled ? "group-hover:scale-105" : ""
+                  }`}
                 />
                 <div className="absolute top-3 left-3 flex items-center gap-2">
                   <span className="px-3 py-1 bg-black/70 backdrop-blur-md text-white text-xs font-bold uppercase rounded-lg shadow-sm">
@@ -393,6 +400,15 @@ function ViewCourse() {
                     </span>
                   )}
                 </div>
+
+                {isEnrolled && (
+                  <div className="absolute inset-0 bg-black/35 flex items-center justify-center group-hover:bg-black/25 transition">
+                    <div className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm flex items-center gap-2 shadow-xl transition-transform group-hover:scale-105">
+                      <FaPlay className="text-xs" />
+                      <span>Continue Learning</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -472,46 +488,19 @@ function ViewCourse() {
               </button>
             </div>
 
-            {/* Enrolled Classroom Access Card */}
-            {isEnrolled && (
-              <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border border-emerald-200/80 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md shrink-0">
-                    <FaPlay className="ml-1" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md border border-emerald-200">
-                      COURSE ENROLLED
-                    </span>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mt-1">
-                      Continue Learning
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-600 mt-0.5">
-                      Open your structured classroom with video player and topic-wise lectures.
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => navigate(`/viewlecture/${courseId}`)}
-                  className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
-                >
-                  <FaPlay className="text-xs" />
-                  <span>Open Classroom →</span>
-                </button>
-              </div>
-            )}
-
-            {/* Mock Tests & Practice Tests (if available) */}
-            {mockTests && mockTests.length > 0 && (
+            {/* Mock Tests Section (if available) */}
+            {mockTests.length > 0 && (
               <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xs border border-gray-200/80 space-y-4">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <div className="flex items-center gap-2">
-                    <FaFileLines className="text-blue-600 text-lg" />
-                    <h3 className="font-extrabold text-lg text-gray-900">
+                    <FaFileLines className="text-blue-600 text-base" />
+                    <h3 className="font-extrabold text-base text-gray-900">
                       Mock Tests & Test Series ({mockTests.length})
                     </h3>
                   </div>
+                  <span className="text-xs font-semibold text-gray-400">
+                    Exam Practice
+                  </span>
                 </div>
 
                 <div className="space-y-3">
