@@ -79,6 +79,9 @@ const courseSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    features:[{
+        type:String
+    }],
     telegramLink:{
         type:String,
         default:""

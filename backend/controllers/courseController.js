@@ -64,7 +64,7 @@ export const getCreatorCourses = async (req,res) => {
 export const editCourse = async (req,res) => {
     try {
         const {courseId} = req.params;
-        const {title , subTitle , description , category , level , price , isPublished, telegramLink, isFree } = req.body;
+        const {title , subTitle , description , category , level , price , isPublished, telegramLink, isFree, features } = req.body;
         let thumbnail
          if(req.file){
             thumbnail =await uploadOnCloudinary(req.file.path)
@@ -77,6 +77,19 @@ export const editCourse = async (req,res) => {
           ? level
           : "Beginner";
 
+        let parsedFeatures = course.features || [];
+        if (features !== undefined) {
+          if (typeof features === "string") {
+            try {
+              parsedFeatures = JSON.parse(features);
+            } catch {
+              parsedFeatures = features.split("\n").map(f => f.trim()).filter(Boolean);
+            }
+          } else if (Array.isArray(features)) {
+            parsedFeatures = features;
+          }
+        }
+
         const updateData = {
           title,
           subTitle,
@@ -86,7 +99,8 @@ export const editCourse = async (req,res) => {
           price,
           isPublished,
           telegramLink: telegramLink ?? course.telegramLink,
-          isFree: (isFree === true || isFree === "true" || Number(price) <= 0)
+          isFree: (isFree === true || isFree === "true" || Number(price) <= 0),
+          features: parsedFeatures
         };
         if (thumbnail) {
           updateData.thumbnail = thumbnail;

@@ -28,6 +28,8 @@ function AddCourses() {
   const [pricingTier, setPricingTier] = useState("paid");
   const [price, setPrice] = useState("");
   const [telegramLink, setTelegramLink] = useState("");
+  const [features, setFeatures] = useState([]);
+  const [newFeature, setNewFeature] = useState("");
   const [isPublished, setIsPublished] = useState(false);
   const thumb = useRef();
   const [frontendImage, setFrontendImage] = useState(null);
@@ -55,6 +57,7 @@ function AddCourses() {
       setCategory(selectedCourse.category || "");
       setLevel(selectedCourse.level || "");
       setTelegramLink(selectedCourse.telegramLink || "");
+      setFeatures(Array.isArray(selectedCourse.features) ? selectedCourse.features : []);
       const coursePrice = selectedCourse.price;
       if (coursePrice && Number(coursePrice) > 0) {
         setPricingTier("paid");
@@ -80,6 +83,17 @@ function AddCourses() {
     }
   };
 
+  const handleAddFeature = (e) => {
+    e?.preventDefault();
+    if (!newFeature.trim()) return;
+    setFeatures((prev) => [...prev, newFeature.trim()]);
+    setNewFeature("");
+  };
+
+  const handleRemoveFeature = (index) => {
+    setFeatures((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const editCourseHandler = async () => {
     if (pricingTier === "paid" && (!price || Number(price) <= 0)) {
       toast.warn("Please enter a valid course price in Rupees or select 100% Free Course.");
@@ -96,6 +110,7 @@ function AddCourses() {
     formData.append("price", pricingTier === "free" ? "0" : price);
     formData.append("telegramLink", telegramLink);
     formData.append("isFree", pricingTier === "free");
+    formData.append("features", JSON.stringify(features));
     if (backendImage) {
       formData.append("thumbnail", backendImage);
     }
@@ -314,6 +329,100 @@ function AddCourses() {
                 placeholder="Detailed curriculum overview and what students will learn..."
                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 leading-relaxed"
               />
+            </div>
+
+            {/* Course Features Section (मुख्य विशेषताएं) */}
+            <div className="pt-2 pb-2 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    Course Features (कोर्स की मुख्य विशेषताएं)
+                  </label>
+                  <p className="text-[11px] text-gray-500 mt-0.5">
+                    Add bullet points shown on the course details page (Checkmark items)
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                  {features.length} Features
+                </span>
+              </div>
+
+              {/* Add New Feature Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newFeature}
+                  onChange={(e) => setNewFeature(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddFeature();
+                    }
+                  }}
+                  placeholder="e.g. Validity - 2 years Helpline No. 9818489147 / 9876543210"
+                  className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddFeature}
+                  className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm transition cursor-pointer shrink-0 shadow-xs"
+                >
+                  + Add Feature
+                </button>
+              </div>
+
+              {/* Preset suggestions */}
+              <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                <span className="text-[11px] font-semibold text-gray-400 mr-1">Quick Add:</span>
+                {[
+                  "यह ऑनलाइन कोर्स All Upcoming Exams के संपूर्ण पाठ्यक्रम पर आधारित है।",
+                  "विशेषताएँ : - अनुभवी अध्यापकों द्वारा Live एवं रिकॉर्डेड कक्षाएं।",
+                  "वीडियो क्लास के साथ ही उस क्लास की (PDF) भी उपलब्ध रहेगी।",
+                  "Validity - 2 years Helpline No. 9818489147 / 9876543210"
+                ].map((preset, pIdx) => (
+                  <button
+                    key={pIdx}
+                    type="button"
+                    onClick={() => {
+                      if (!features.includes(preset)) {
+                        setFeatures([...features, preset]);
+                      }
+                    }}
+                    className="text-[11px] px-2.5 py-1 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg text-gray-600 transition cursor-pointer border border-gray-200/60"
+                  >
+                    + {preset.slice(0, 28)}...
+                  </button>
+                ))}
+              </div>
+
+              {/* Current Features List */}
+              <div className="space-y-2 pt-2">
+                {features.length === 0 ? (
+                  <div className="p-3.5 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-center text-xs text-gray-400">
+                    No custom features added yet. (Default standard features will be displayed on website until you add custom ones).
+                  </div>
+                ) : (
+                  features.map((feat, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3 text-xs sm:text-sm text-gray-800 animate-in fade-in duration-150"
+                    >
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <FiCheck className="text-emerald-600 text-base shrink-0 mt-0.5" />
+                        <span className="break-words leading-snug">{feat}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFeature(idx)}
+                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer shrink-0"
+                        title="Delete feature"
+                      >
+                        <FiTrash2 className="text-sm" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
 
             {/* Category & Level in 2 columns */}

@@ -382,37 +382,28 @@ function ViewCourse() {
               </div>
             </div>
 
-            {/* Features Section (matching screenshot) */}
+            {/* Features Section (Dynamically loaded from course data) */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xs border border-gray-200/80 space-y-4">
               <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
                 Features
               </h2>
 
               <div className="space-y-3.5 pt-1">
-                <div className="flex items-start gap-3 text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                  <FiCheckCircle className="text-blue-600 w-5 h-5 shrink-0 mt-0.5" />
-                  <span>यह ऑनलाइन कोर्स All Upcoming Exams के संपूर्ण पाठ्यक्रम पर आधारित है।</span>
-                </div>
-
-                <div className="flex items-start gap-3 text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                  <FiCheckCircle className="text-blue-600 w-5 h-5 shrink-0 mt-0.5" />
-                  <span>विशेषताएँ : - विशेष अनुभवी अध्यापकों के द्वारा Live वीडियो कक्षाएँ आप इन कक्षाओं को सुविधानुसार कभी भी देख सकते हैं।</span>
-                </div>
-
-                <div className="flex items-start gap-3 text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                  <FiCheckCircle className="text-blue-600 w-5 h-5 shrink-0 mt-0.5" />
-                  <span>वीडियो क्लास के साथ ही उस क्लास की (PDF) भी उपलब्ध रहेगी।</span>
-                </div>
-
-                <div className="flex items-start gap-3 text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                  <FiCheckCircle className="text-blue-600 w-5 h-5 shrink-0 mt-0.5" />
-                  <span>आप सभी अभ्यर्थियों का ध्यान रखते हुए हमने यह कोर्स मात्र ₹{currentPrice} में रखा है।</span>
-                </div>
-
-                <div className="flex items-start gap-3 text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
-                  <FiCheckCircle className="text-blue-600 w-5 h-5 shrink-0 mt-0.5" />
-                  <span>Validity - 2 years Helpline No. 9818489147 / 9876543210</span>
-                </div>
+                {(selectedCourseData?.features && selectedCourseData.features.length > 0
+                  ? selectedCourseData.features
+                  : [
+                      "यह ऑनलाइन कोर्स All Upcoming Exams के संपूर्ण पाठ्यक्रम पर आधारित है।",
+                      "विशेषताएँ : - विशेष अनुभवी अध्यापकों के द्वारा Live वीडियो कक्षाएँ आप इन कक्षाओं को सुविधानुसार कभी भी देख सकते हैं।",
+                      "वीडियो क्लास के साथ ही उस क्लास की (PDF) भी उपलब्ध रहेगी।",
+                      `आप सभी अभ्यर्थियों का ध्यान रखते हुए हमने यह कोर्स मात्र ₹${currentPrice} में रखा है।`,
+                      "Validity - 2 years Helpline No. 9818489147 / 9876543210"
+                    ]
+                ).map((feat, fIdx) => (
+                  <div key={fIdx} className="flex items-start gap-3 text-sm sm:text-base text-gray-800 leading-relaxed font-medium">
+                    <FiCheckCircle className="text-blue-600 w-5 h-5 shrink-0 mt-0.5" />
+                    <span>{feat}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
