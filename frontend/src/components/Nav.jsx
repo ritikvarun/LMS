@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Logo from './Logo';
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { HiSparkles } from "react-icons/hi2";
@@ -62,6 +63,18 @@ function Nav() {
     setShowPro(false);
     setShowMobileSearch(false);
   }, [location.pathname]);
+
+  // Lock body scroll when mobile drawer is open to prevent bleed-through scrolling
+  useEffect(() => {
+    if (showHam) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showHam]);
 
   const handleLogout = async () => {
     try {
@@ -335,7 +348,10 @@ function Nav() {
 
       {/* Mobile Inline Search Bar (Toggled on < sm) */}
       {showMobileSearch && (
-        <div className="sm:hidden px-4 pb-3 pt-1 border-t border-gray-100 bg-white/95 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div 
+          className="sm:hidden px-4 pb-3 pt-1 border-t border-gray-100 transition-all shadow-xs"
+          style={{ backgroundColor: "#ffffff" }}
+        >
           <form onSubmit={handleSearch} className="relative w-full">
             <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none" />
             <input
@@ -359,41 +375,52 @@ function Nav() {
         </div>
       )}
 
-      {/* Mobile / Tablet Drawer */}
-      {showHam && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          {/* Dimmed Backdrop */}
+      {/* Mobile / Tablet Drawer Portaled to Document Body (Zero Bleed-Through) */}
+      {showHam && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[99999] lg:hidden flex justify-end">
+          {/* Dimmed Dark Backdrop with explicit background color */}
           <div 
-            className="fixed inset-0 bg-gray-900/40 backdrop-blur-xs transition-opacity" 
+            className="fixed inset-0 transition-opacity duration-300 cursor-pointer" 
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.65)", backdropFilter: "blur(4px)" }}
             onClick={() => setShowHam(false)}
           />
 
-          {/* Drawer Content */}
-          <div className="fixed top-0 right-0 w-[290px] sm:w-[340px] h-full bg-white shadow-2xl p-6 flex flex-col justify-between z-10 animate-in slide-in-from-right duration-300">
+          {/* Drawer Panel with 100% Solid Opaque White Background */}
+          <div 
+            className="relative w-[85vw] max-w-[340px] sm:w-[360px] h-full shadow-2xl p-5 sm:p-6 flex flex-col justify-between z-10 overflow-y-auto"
+            style={{ backgroundColor: "#ffffff" }}
+          >
             <div>
-              {/* Header */}
-              <div className="flex items-center justify-between pb-5 border-b border-gray-100">
-                <Logo iconSize="w-8 h-8" tagline="" />
+              {/* Header: Logo + Close Button */}
+              <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+                <div onClick={() => { setShowHam(false); navigate("/"); }} className="cursor-pointer">
+                  <Logo iconSize="w-8 h-8" tagline="" />
+                </div>
                 <button
                   onClick={() => setShowHam(false)}
-                  className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 cursor-pointer"
+                  className="p-2 rounded-xl text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition cursor-pointer"
+                  aria-label="Close menu"
                 >
-                  <HiX className="w-5 h-5" />
+                  <HiX className="w-6 h-6" />
                 </button>
               </div>
 
               {/* User overview if logged in */}
               {userData && (
-                <div className="mt-4 p-3 bg-gray-50 rounded-xl flex items-center gap-3">
+                <div className="mt-4 p-3 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-3">
                   {userData.photoUrl ? (
-                    <img src={userData.photoUrl} className="w-10 h-10 rounded-full object-cover" alt="" />
+                    <img 
+                      src={userData.photoUrl} 
+                      className="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-500/20 shrink-0" 
+                      alt={userData.name} 
+                    />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
-                      {userData.name?.slice(0, 1)?.toUpperCase()}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+                      {userData.name?.slice(0, 1)?.toUpperCase() || "U"}
                     </div>
                   )}
-                  <div className="overflow-hidden">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{userData.name}</p>
+                  <div className="overflow-hidden min-w-0">
+                    <p className="text-sm font-bold text-gray-900 truncate">{userData.name}</p>
                     <p className="text-xs text-gray-500 truncate">{userData.email}</p>
                   </div>
                 </div>
@@ -407,7 +434,7 @@ function Nav() {
                   placeholder="Search courses..."
                   value={navSearch}
                   onChange={(e) => setNavSearch(e.target.value)}
-                  className="w-full pl-9 pr-8 py-2.5 bg-gray-100 focus:bg-white border border-gray-200 rounded-full text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition"
+                  className="w-full pl-9 pr-8 py-2.5 bg-gray-100 focus:bg-white border border-gray-200 rounded-full text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition shadow-2xs"
                 />
                 {navSearch && (
                   <button
@@ -421,41 +448,49 @@ function Nav() {
               </form>
 
               {/* Navigation Links */}
-              <div className="mt-5 flex flex-col space-y-1">
+              <div className="mt-5 flex flex-col space-y-1.5">
                 <button
-                  onClick={() => navigate("/")}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition text-left cursor-pointer"
+                  onClick={() => { setShowHam(false); navigate("/"); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left cursor-pointer ${
+                    isActive("/") ? "bg-indigo-50 text-indigo-600 font-semibold" : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
-                  Home
+                  <span>Home</span>
                 </button>
                 <button
-                  onClick={() => navigate("/allcourses")}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition text-left cursor-pointer"
+                  onClick={() => { setShowHam(false); navigate("/allcourses"); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left cursor-pointer ${
+                    location.pathname === "/allcourses" && !location.search ? "bg-indigo-50 text-indigo-600 font-semibold" : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
                   <FiBookOpen className="text-base text-gray-400" />
                   <span>All Courses</span>
                 </button>
                 <button
-                  onClick={() => navigate("/allcourses?type=paid")}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition text-left cursor-pointer"
+                  onClick={() => { setShowHam(false); navigate("/allcourses?type=paid"); }}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left cursor-pointer ${
+                    location.pathname === "/allcourses" && location.search.includes("type=paid") ? "bg-amber-50 text-amber-800 font-semibold" : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <FiAward className="text-base text-amber-500" />
                     <span>Paid Courses</span>
                   </div>
-                  <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                  <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
                     PRO
                   </span>
                 </button>
                 <button
-                  onClick={() => navigate("/freecourses")}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition text-left cursor-pointer"
+                  onClick={() => { setShowHam(false); navigate("/freecourses"); }}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left cursor-pointer ${
+                    location.pathname === "/freecourses" ? "bg-emerald-50 text-emerald-800 font-semibold" : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <FiGift className="text-base text-emerald-500" />
                     <span>Free Courses</span>
                   </div>
-                  <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                  <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                     FREE
                   </span>
                 </button>
@@ -463,26 +498,26 @@ function Nav() {
                 {userData && (
                   <>
                     <button
-                      onClick={() => navigate("/profile")}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition text-left cursor-pointer"
+                      onClick={() => { setShowHam(false); navigate("/profile"); }}
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 transition text-left cursor-pointer"
                     >
                       <FiUser className="text-base text-gray-400" />
-                      My Profile
+                      <span>My Profile</span>
                     </button>
                     <button
-                      onClick={() => navigate("/enrolledcourses")}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition text-left cursor-pointer"
+                      onClick={() => { setShowHam(false); navigate("/enrolledcourses"); }}
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 transition text-left cursor-pointer"
                     >
                       <FiBookOpen className="text-base text-gray-400" />
-                      My Courses
+                      <span>My Courses</span>
                     </button>
                     {userData.role === "educator" && (
                       <button
-                        onClick={() => navigate("/dashboard")}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition text-left cursor-pointer"
+                        onClick={() => { setShowHam(false); navigate("/dashboard"); }}
+                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition text-left cursor-pointer"
                       >
                         <FiLayout className="text-base text-indigo-600" />
-                        Instructor Studio
+                        <span>Instructor Studio</span>
                       </button>
                     )}
                   </>
@@ -491,17 +526,17 @@ function Nav() {
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-4 border-t border-gray-100">
+            <div className="pt-4 mt-6 border-t border-gray-100">
               {!userData ? (
                 <div className="flex flex-col gap-2">
                   <button
-                    onClick={() => navigate("/login")}
+                    onClick={() => { setShowHam(false); navigate("/login"); }}
                     className="w-full py-2.5 text-center text-sm font-semibold text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 transition cursor-pointer"
                   >
                     Sign In
                   </button>
                   <button
-                    onClick={() => navigate("/signup")}
+                    onClick={() => { setShowHam(false); navigate("/signup"); }}
                     className="w-full py-2.5 text-center text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm transition cursor-pointer"
                   >
                     Get Started Free
@@ -509,16 +544,17 @@ function Nav() {
                 </div>
               ) : (
                 <button
-                  onClick={handleLogout}
+                  onClick={() => { setShowHam(false); handleLogout(); }}
                   className="w-full py-2.5 flex items-center justify-center gap-2 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition cursor-pointer"
                 >
                   <FiLogOut className="text-base" />
-                  Sign Out
+                  <span>Sign Out</span>
                 </button>
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   );

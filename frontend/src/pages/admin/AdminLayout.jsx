@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
@@ -31,6 +32,18 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
   const { creatorCourseData } = useSelector((state) => state.course);
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileOpen]);
 
   // Determine active item based on current URL path or prop
   const currentPath = location.pathname;
@@ -213,18 +226,22 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
       {/* ========================================================= */}
       {/* MOBILE DRAWER (Slide-over Sidebar for Mobile Screens) */}
       {/* ========================================================= */}
-      {isMobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
+      {isMobileOpen && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[99999] lg:hidden flex">
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity" 
+            className="fixed inset-0 transition-opacity duration-300 cursor-pointer" 
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.65)", backdropFilter: "blur(4px)" }}
             onClick={() => setIsMobileOpen(false)}
           />
-          <div className="relative w-64 bg-white h-full flex flex-col z-10 shadow-2xl animate-in slide-in-from-left duration-200">
+          <div 
+            className="relative w-64 h-full flex flex-col z-10 shadow-2xl overflow-y-auto"
+            style={{ backgroundColor: "#ffffff" }}
+          >
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <Logo />
               <button 
                 onClick={() => setIsMobileOpen(false)}
-                className="p-1.5 rounded-xl text-gray-400 hover:bg-gray-100 text-lg"
+                className="p-1.5 rounded-xl text-gray-400 hover:bg-gray-100 text-lg cursor-pointer"
               >
                 <FiX />
               </button>
@@ -265,7 +282,7 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
                     setIsMobileOpen(false);
                     navigate("/");
                   }}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100"
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 cursor-pointer"
                 >
                   <FiArrowLeft /> Back to Website
                 </button>
@@ -283,13 +300,14 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 text-gray-400 hover:text-red-600"
+                className="p-2 text-gray-400 hover:text-red-600 cursor-pointer"
               >
                 <FiLogOut />
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ========================================================= */}

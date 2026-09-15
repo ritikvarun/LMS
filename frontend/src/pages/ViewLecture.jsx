@@ -338,7 +338,7 @@ function ViewLecture() {
         <aside
           className={`${
             isSidebarOpen ? "w-full lg:w-[360px] xl:w-[400px]" : "w-0 hidden"
-          } bg-white border-r border-gray-200 flex flex-col shrink-0 h-auto lg:h-[calc(100vh-56px)] transition-all duration-300 z-20 overflow-y-auto`}
+          } order-2 lg:order-1 bg-white border-r border-gray-200 flex flex-col shrink-0 h-auto lg:h-[calc(100vh-56px)] transition-all duration-300 z-20 overflow-y-auto`}
         >
           {/* Sidebar Top: Course / Subject Title matching screenshot */}
           <div className="p-5 pb-3 border-b border-gray-100">
@@ -480,7 +480,7 @@ function ViewLecture() {
         {/* ========================================================= */}
         {/* RIGHT MAIN AREA: VIDEO PLAYER & CONTENT (RIGHT MAI VIDEO) */}
         {/* ========================================================= */}
-        <main className="flex-1 flex flex-col h-auto lg:h-[calc(100vh-56px)] overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 order-1 lg:order-2 flex flex-col h-auto lg:h-[calc(100vh-56px)] overflow-y-auto p-3 sm:p-6 lg:p-8">
           
           {/* Active Lecture Title (Matching screenshot top: 2. How to Attend... - 2.1 ...) */}
           <div className="mb-4">

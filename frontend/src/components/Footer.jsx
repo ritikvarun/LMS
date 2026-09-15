@@ -72,7 +72,19 @@ const Footer = () => {
               <li>
                 <button onClick={() => navigate("/allcourses")} className="hover:text-white transition cursor-pointer flex items-center gap-1.5">
                   <FiBookOpen className="text-xs text-indigo-400" />
-                  All Courses
+                  <span>All Courses</span>
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate("/allcourses?type=paid")} className="hover:text-white transition cursor-pointer flex items-center gap-1.5">
+                  <span className="text-xs text-amber-400">★</span>
+                  <span>Paid Courses</span>
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate("/freecourses")} className="hover:text-white transition cursor-pointer flex items-center gap-1.5">
+                  <span className="text-xs text-emerald-400">🎁</span>
+                  <span>Free Courses</span>
                 </button>
               </li>
             </ul>
