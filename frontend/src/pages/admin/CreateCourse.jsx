@@ -36,7 +36,7 @@ const CreateCourse = () => {
       toast.success("Course created! Now configure curriculum and details.");
       if (result.data?._id) {
         if (courseType === "free") {
-          navigate(`/admin/curriculum/${result.data._id}`);
+          navigate(`/admin/free-curriculum/${result.data._id}`);
         } else {
           navigate(`/addcourses/${result.data._id}`);
         }

@@ -11,7 +11,7 @@ const CourseCard = ({ thumbnail, title, category, price, id, level, isFree: isFr
   return (
     <div
       className="group bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-pointer max-w-sm w-full"
-      onClick={() => navigate(`/viewcourse/${id}`)}
+      onClick={() => navigate(isFree ? `/freecourse/${id}` : `/viewcourse/${id}`)}
     >
       {/* Thumbnail Container */}
       <div className="relative aspect-video w-full overflow-hidden bg-gray-100">

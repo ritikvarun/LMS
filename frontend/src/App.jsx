@@ -31,6 +31,7 @@ import ViewLecture from './pages/ViewLecture'
 import FreeCourses from './pages/FreeCourses'
 import FreeCourseDetail from './pages/FreeCourseDetail'
 import ManageCurriculum from './pages/admin/ManageCurriculum'
+import ManageFreeCurriculum from './pages/admin/ManageFreeCurriculum'
 import AdminFreeCourses from './pages/admin/AdminFreeCourses'
 import AdminPaidCourses from './pages/admin/AdminPaidCourses'
 import ManageBooks from './pages/admin/ManageBooks'
@@ -62,6 +63,7 @@ function App() {
         <Route path='/enrolledcourses' element={userData?<EnrolledCourse/>:<Navigate to={"/signup"}/>}/>
         <Route path='/viewlecture/:courseId' element={userData?<ViewLecture/>:<Navigate to={"/signup"}/>}/>
         <Route path='/admin/curriculum/:courseId' element={userData?.role === "educator"?<ManageCurriculum/>:<Navigate to={"/signup"}/>}/>
+        <Route path='/admin/free-curriculum/:courseId' element={userData?.role === "educator"?<ManageFreeCurriculum/>:<Navigate to={"/signup"}/>}/>
         
         
         <Route path='/dashboard' element={userData?.role === "educator"?<Dashboard/>:<Navigate to={"/signup"}/>}/>

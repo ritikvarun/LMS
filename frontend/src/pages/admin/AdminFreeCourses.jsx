@@ -193,8 +193,8 @@ function AdminFreeCourses() {
                     <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between gap-2">
                       {/* Manage Curriculum Button */}
                       <button
-                        onClick={() => navigate(`/admin/curriculum/${course._id}`)}
-                        className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        onClick={() => navigate(`/admin/free-curriculum/${course._id}`)}
+                        className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs border border-emerald-200"
                       >
                         <FiBookOpen />
                         <span>Curriculum</span>

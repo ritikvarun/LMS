@@ -47,6 +47,11 @@ function ViewCourse() {
     try {
       const res = await axios.get(`${serverUrl}/api/course/getcourselecture/${courseId}`, { withCredentials: true });
       if (res.data) {
+        // If course is free, immediately route to FreeCourseDetail (Image 2 layout)
+        if (res.data.isFree === true || !res.data.price || Number(res.data.price) <= 0) {
+          navigate(`/freecourse/${courseId}`, { replace: true });
+          return;
+        }
         dispatch(setSelectedCourseData(res.data));
         if (res.data.isEnrolled) {
           setIsEnrolled(true);
@@ -56,10 +61,23 @@ function ViewCourse() {
       console.log("Error fetching course data:", err);
       const found = courseData?.find((item) => item._id === courseId);
       if (found) {
+        if (found.isFree === true || !found.price || Number(found.price) <= 0) {
+          navigate(`/freecourse/${courseId}`, { replace: true });
+          return;
+        }
         dispatch(setSelectedCourseData(found));
       }
     }
   };
+
+  useEffect(() => {
+    if (selectedCourseData?._id === courseId) {
+      const isFree = selectedCourseData.isFree === true || !selectedCourseData.price || Number(selectedCourseData.price) <= 0;
+      if (isFree) {
+        navigate(`/freecourse/${courseId}`, { replace: true });
+      }
+    }
+  }, [selectedCourseData, courseId, navigate]);
 
   const checkEnrollment = () => {
     const verify = userData?.enrolledCourses?.some((c) => {
@@ -274,6 +292,10 @@ function ViewCourse() {
 
   const activeLive = liveClasses.find((c) => c.status === "live");
   const upcomingLive = !activeLive && liveClasses.find((c) => c.status === "scheduled");
+
+  if (selectedCourseData?._id === courseId && (selectedCourseData.isFree === true || !selectedCourseData.price || Number(selectedCourseData.price) <= 0)) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-20">

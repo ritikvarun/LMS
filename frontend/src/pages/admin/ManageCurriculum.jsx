@@ -74,6 +74,10 @@ function ManageCurriculum() {
     try {
       const res = await axios.get(`${serverUrl}/api/course/${courseId}/curriculum`, { withCredentials: true });
       if (res.data?.success) {
+        if (res.data.isFree === true || !res.data.price || Number(res.data.price) <= 0) {
+          navigate(`/admin/free-curriculum/${courseId}`, { replace: true });
+          return;
+        }
         setCourseData(res.data);
         const tList = res.data.topics || [];
         setTopics(tList);

@@ -130,7 +130,28 @@ function FreeCourseDetail() {
     );
   }
 
-  const subjects = course.subjects || [];
+  const subjects = (course.subjects && course.subjects.length > 0)
+    ? course.subjects
+    : (course.topics && course.topics.length > 0)
+      ? course.topics.map((top) => ({
+          _id: top._id,
+          title: top.title,
+          thumbnail: course.thumbnail || "",
+          chapters: [{
+            _id: `${top._id}-ch`,
+            title: `${top.title} - Lectures`,
+            thumbnail: course.thumbnail || "",
+            videos: (top.videos || []).map((v) => ({
+              _id: v._id,
+              title: v.title,
+              videoUrl: v.videoUrl,
+              pdfUrl: v.pdfUrl,
+              thumbnail: v.thumbnail || course.thumbnail || "",
+              duration: v.duration || ""
+            }))
+          }]
+        }))
+      : [];
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-gray-900 pb-24">
@@ -170,9 +191,17 @@ function FreeCourseDetail() {
             )}
 
             {selectedSubject && !selectedChapter && (
-              /* Screen 3 Breadcrumb: Course Title / Subject Title */
+              /* Screen 3 Breadcrumb: Home / Free courses / Course Title / Subject Title */
               <>
-                <span onClick={() => setSelectedSubject(null)} className="hover:text-indigo-600 transition cursor-pointer">
+                <span onClick={() => { setSelectedSubject(null); setSelectedChapter(null); }} className="hover:text-indigo-600 transition cursor-pointer">
+                  Home
+                </span>
+                <span>/</span>
+                <span onClick={() => navigate("/freecourses")} className="hover:text-indigo-600 transition cursor-pointer">
+                  Free courses
+                </span>
+                <span>/</span>
+                <span onClick={() => setSelectedSubject(null)} className="hover:text-indigo-600 transition cursor-pointer truncate max-w-[150px]">
                   {course.title}
                 </span>
                 <span>/</span>
@@ -183,13 +212,21 @@ function FreeCourseDetail() {
             )}
 
             {selectedSubject && selectedChapter && (
-              /* Screen 4 Breadcrumb: Course Title / Subject Title / Chapter Title */
+              /* Screen 4 Breadcrumb: Home / Free courses / Course Title / Subject Title / Chapter Title */
               <>
-                <span onClick={() => setSelectedSubject(null)} className="hover:text-indigo-600 transition cursor-pointer">
+                <span onClick={() => { setSelectedSubject(null); setSelectedChapter(null); }} className="hover:text-indigo-600 transition cursor-pointer">
+                  Home
+                </span>
+                <span>/</span>
+                <span onClick={() => navigate("/freecourses")} className="hover:text-indigo-600 transition cursor-pointer">
+                  Free courses
+                </span>
+                <span>/</span>
+                <span onClick={() => setSelectedSubject(null)} className="hover:text-indigo-600 transition cursor-pointer truncate max-w-[120px]">
                   {course.title}
                 </span>
                 <span>/</span>
-                <span onClick={() => setSelectedChapter(null)} className="hover:text-indigo-600 transition cursor-pointer">
+                <span onClick={() => setSelectedChapter(null)} className="hover:text-indigo-600 transition cursor-pointer truncate max-w-[120px]">
                   {selectedSubject.title}
                 </span>
                 <span>/</span>
@@ -209,7 +246,7 @@ function FreeCourseDetail() {
             
             {/* Course Header Banner Card matching Image 2 */}
             <div className="bg-white rounded-2xl border border-gray-200/90 p-5 sm:p-7 shadow-xs flex flex-col sm:flex-row items-center sm:items-center gap-5 sm:gap-6">
-              {/* Left Thumbnail Poster / Placeholder */}
+              {/* Left Thumbnail Poster */}
               <div className="w-48 h-28 sm:w-56 sm:h-32 rounded-2xl bg-pink-50/80 border border-pink-100 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
                 {course.thumbnail ? (
                   <img
@@ -229,14 +266,14 @@ function FreeCourseDetail() {
 
               {/* Right Course Title */}
               <div className="flex-1 text-center sm:text-left">
-                <div className="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md mb-2">
-                  Free Batch
+                <div className="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-md mb-2">
+                  FREE BATCH
                 </div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-snug">
                   {course.title}
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                  {course.subTitle || course.category} • {course.totalVideos || 0} Total Videos
+                  {course.subTitle || course.description || course.category} • {course.totalVideos || (course.subjects || []).reduce((acc, sub) => acc + (sub.chapters || []).reduce((cAcc, chap) => cAcc + (chap.videos?.length || 0), 0), 0) || 0} Total Videos
                 </p>
               </div>
             </div>

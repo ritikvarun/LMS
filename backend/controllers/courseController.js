@@ -8,13 +8,18 @@ import User from "../models/userModel.js"
 export const createCourse = async (req,res) => {
 
     try {
-        const {title,category} = req.body
+        const {title, category, price, isFree, subTitle, description} = req.body
         if(!title || !category){
             return res.status(400).json({message:"title and category is required"})
         }
+        const isFreeCourse = isFree === true || isFree === "true" || !price || Number(price) <= 0;
         const course = await Course.create({
             title,
             category,
+            subTitle: subTitle || "",
+            description: description || "",
+            price: isFreeCourse ? 0 : Number(price),
+            isFree: isFreeCourse,
             creator: req.userId
         })
         
@@ -384,6 +389,26 @@ export const getFreeCourseById = async (req, res) => {
         }
 
         const doc = course.toObject();
+        if ((!doc.subjects || doc.subjects.length === 0) && doc.topics && doc.topics.length > 0) {
+            doc.subjects = doc.topics.map((top) => ({
+                _id: top._id,
+                title: top.title,
+                thumbnail: doc.thumbnail || "",
+                chapters: [{
+                    _id: `${top._id}-ch1`,
+                    title: `${top.title} - Lectures`,
+                    thumbnail: doc.thumbnail || "",
+                    videos: (top.videos || []).map((v) => ({
+                        _id: v._id,
+                        title: v.title,
+                        videoUrl: v.videoUrl,
+                        pdfUrl: v.pdfUrl,
+                        thumbnail: v.thumbnail || doc.thumbnail || "",
+                        duration: v.duration || ""
+                    }))
+                }]
+            }));
+        }
         const subjectVideos = (doc.subjects || []).reduce((acc, sub) => {
             return acc + (sub.chapters || []).reduce((cAcc, chap) => cAcc + (chap.videos?.length || 0), 0);
         }, 0);
