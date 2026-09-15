@@ -20,9 +20,7 @@ function ViewCourse() {
   const { courseData, selectedCourseData } = useSelector((state) => state.course);
   const { userData } = useSelector((state) => state.user);
 
-  const [creatorData, setCreatorData] = useState(null);
   const [selectedLecture, setSelectedLecture] = useState(null);
-  const [selectedCreatorCourse, setSelectedCreatorCourse] = useState([]);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [liveClasses, setLiveClasses] = useState([]);
   const [mockTests, setMockTests] = useState([]);
@@ -115,34 +113,6 @@ function ViewCourse() {
     };
     fetchMock();
   }, [courseId, userData]);
-
-  // Fetch creator info once course data is available
-  useEffect(() => {
-    const getCreator = async () => {
-      if (selectedCourseData?.creator) {
-        try {
-          const result = await axios.post(
-            `${serverUrl}/api/course/getcreator`,
-            { userId: selectedCourseData.creator },
-            { withCredentials: true }
-          );
-          setCreatorData(result.data);
-        } catch (error) {
-          console.error("Error fetching creator:", error);
-        }
-      }
-    };
-    getCreator();
-  }, [selectedCourseData]);
-
-  useEffect(() => {
-    if (creatorData?._id && courseData.length > 0) {
-      const creatorCourses = courseData.filter(
-        (course) => course.creator === creatorData._id && course._id !== courseId
-      );
-      setSelectedCreatorCourse(creatorCourses);
-    }
-  }, [creatorData, courseData]);
 
   // Coupon handling
   const handleApplyCoupon = async (codeToApply) => {
@@ -532,33 +502,6 @@ function ViewCourse() {
                       )}
                     </div>
                   ))}
-                </div>
-              </div>
-            )}
-
-            {/* Instructor Profile */}
-            {creatorData && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xs border border-gray-200/80 flex items-center gap-4">
-                {creatorData.photoUrl ? (
-                  <img
-                    src={creatorData.photoUrl}
-                    alt={creatorData.name}
-                    className="w-16 h-16 rounded-full object-cover ring-2 ring-blue-500/20"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold text-xl flex items-center justify-center shadow-xs">
-                    {creatorData.name?.slice(0, 1)?.toUpperCase()}
-                  </div>
-                )}
-                <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                    Lead Instructor
-                  </span>
-                  <h3 className="text-lg font-bold text-gray-900 mt-1">{creatorData.name}</h3>
-                  <p className="text-xs text-gray-500">{creatorData.email}</p>
-                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                    {creatorData.description || "Passionate educator dedicated to comprehensive student success."}
-                  </p>
                 </div>
               </div>
             )}

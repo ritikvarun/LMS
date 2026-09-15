@@ -87,7 +87,6 @@ function ViewLecture() {
   }, [courseId]);
 
   const selectedCourse = course || initialCourse;
-  const courseCreator = userData?._id === selectedCourse?.creator ? userData : null;
 
   // STRICT ACCESS CONTROL:
   // If course is PAID and user is NOT enrolled and NOT creator and NOT educator:
@@ -608,16 +607,6 @@ function ViewLecture() {
                   <FiFileText /> Class Notes (PDF)
                 </button>
               )}
-              <button
-                onClick={() => setActiveTab("instructor")}
-                className={`text-sm font-bold pb-1.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
-                  activeTab === "instructor"
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-800"
-                }`}
-              >
-                <FiUser /> Instructor
-              </button>
             </div>
 
             {/* Tab 1: Overview */}
@@ -655,25 +644,6 @@ function ViewLecture() {
                     <FiDownload />
                     <span>Download PDF</span>
                   </a>
-                </div>
-              </div>
-            )}
-
-            {/* Tab 3: Instructor */}
-            {activeTab === "instructor" && (
-              <div className="py-5">
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs flex items-center gap-4 max-w-md">
-                  {courseCreator?.photoUrl ? (
-                    <img src={courseCreator.photoUrl} alt="" className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500/20" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-base">
-                      {courseCreator?.name?.slice(0, 1) || "I"}
-                    </div>
-                  )}
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm">{courseCreator?.name || "Faculty Member"}</h4>
-                    <p className="text-xs text-gray-500">{courseCreator?.email}</p>
-                  </div>
                 </div>
               </div>
             )}
