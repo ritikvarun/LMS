@@ -113,7 +113,6 @@ function ManageBooks() {
 
       const res = await axios.post(`${serverUrl}/api/book/add`, formData, {
         withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.data?.success) {

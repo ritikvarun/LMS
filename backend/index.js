@@ -19,7 +19,8 @@ let app = express()
 // Trust proxy is required for Render / reverse proxies so secure cookies work over HTTPS
 app.set("trust proxy", 1)
 
-app.use(express.json())
+app.use(express.json({ limit: "50mb" }))
+app.use(express.urlencoded({ extended: true, limit: "50mb" }))
 app.use(cookieParser())
 app.use("/public", express.static("public"))
 
@@ -67,8 +68,28 @@ app.get("/" , (req,res)=>{
     res.send("Hello From Server")
 })
 
+// Global error handler middleware (catches multer, stream, and unhandled routing errors)
+app.use((err, req, res, next) => {
+    console.error("Global Server Error:", err?.message || err);
+    if (res.headersSent) {
+        return next(err);
+    }
+    return res.status(err.status || 500).json({
+        message: err.message || "An unexpected server error occurred during request",
+        error: process.env.NODE_ENV === "development" ? err : undefined
+    });
+});
+
+process.on("uncaughtException", (err) => {
+    console.error("CRITICAL Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("CRITICAL Unhandled Rejection at:", promise, "reason:", reason);
+});
+
 app.listen(port , ()=>{
-    console.log("Server Started")
+    console.log("Server Started on port", port)
     connectDb()
 })
 

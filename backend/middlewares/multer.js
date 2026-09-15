@@ -1,14 +1,39 @@
 import multer from "multer";
+import path from "path";
+import fs from "fs";
 
-let storage = multer.diskStorage({
-    destination:(req,file,cb)=>{
-        cb(null,"./public")
-    },
-    filename:(req,file,cb)=>{
-        cb(null,file.originalname)
+const uploadDir = path.resolve(process.cwd(), "public");
+if (!fs.existsSync(uploadDir)) {
+    try {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    } catch (e) {
+        console.error("Could not create public directory:", e);
     }
-})
+}
 
-const upload = multer({storage})
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        try {
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            cb(null, uploadDir);
+        } catch (err) {
+            cb(err, uploadDir);
+        }
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname || "");
+        const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+        cb(null, safeName);
+    }
+});
 
-export default upload
+const upload = multer({
+    storage,
+    limits: {
+        fileSize: 500 * 1024 * 1024 // 500MB limit
+    }
+});
+
+export default upload;

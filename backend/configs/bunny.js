@@ -17,7 +17,7 @@ const safeDelete = (filePath) => {
 // Fallback to local storage if Bunny Stream credentials are not yet configured in .env
 const saveLocally = (filePath) => {
     try {
-        const videosDir = path.join("public", "videos");
+        const videosDir = path.resolve(process.cwd(), "public", "videos");
         if (!fs.existsSync(videosDir)) {
             fs.mkdirSync(videosDir, { recursive: true });
         }
@@ -29,8 +29,9 @@ const saveLocally = (filePath) => {
         fs.copyFileSync(filePath, targetPath);
         safeDelete(filePath);
 
-        const localUrl = `http://localhost:8000/public/videos/${filename}`;
-        console.log(`ℹ️ Bunny Stream credentials not set. Saved video locally: ${localUrl}`);
+        const serverBase = (process.env.SERVER_URL || (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://lms-jcpg.onrender.com")).replace(/\/+$/, "");
+        const localUrl = `${serverBase}/public/videos/${filename}`;
+        console.log(`ℹ️ Video saved to server storage: ${localUrl}`);
         return localUrl;
     } catch (e) {
         console.error("Local save error:", e);
@@ -108,7 +109,15 @@ export const uploadOnBunny = async (filePath, title = "Lecture Video") => {
         console.log(`🎉 Bunny Stream Upload Complete! Embed URL: ${embedUrl}`);
         return embedUrl;
     } catch (error) {
-        console.error("❌ Bunny Stream upload error:", error);
+        console.error("❌ Bunny Stream upload error:", error?.message || error);
+        try {
+            if (fs.existsSync(filePath)) {
+                console.log("⚠️ Falling back to local server storage...");
+                return saveLocally(filePath);
+            }
+        } catch (fallbackErr) {
+            console.error("Fallback storage error:", fallbackErr);
+        }
         safeDelete(filePath);
         throw error;
     }

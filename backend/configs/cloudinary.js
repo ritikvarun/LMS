@@ -17,7 +17,7 @@ const safeDelete = (filePath) => {
 
 const saveLocally = (filePath) => {
     try {
-        const videosDir = path.join("public", "videos");
+        const videosDir = path.resolve(process.cwd(), "public", "videos");
         if (!fs.existsSync(videosDir)) {
             fs.mkdirSync(videosDir, { recursive: true });
         }
@@ -29,7 +29,8 @@ const saveLocally = (filePath) => {
         fs.copyFileSync(filePath, targetPath);
         safeDelete(filePath);
 
-        const localUrl = `http://localhost:8000/public/videos/${filename}`;
+        const serverBase = (process.env.SERVER_URL || (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://lms-jcpg.onrender.com")).replace(/\/+$/, "");
+        const localUrl = `${serverBase}/public/videos/${filename}`;
         console.log(`✅ Saved large video locally (>95MB limit): ${localUrl}`);
         return localUrl;
     } catch (e) {

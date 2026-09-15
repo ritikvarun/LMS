@@ -214,13 +214,11 @@ function ManageFreeCurriculum() {
 
       if (subjectMode === "add") {
         await axios.post(`${serverUrl}/api/course/${courseId}/subject`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         });
         toast.success(`Subject "${subjectTitle}" added!`);
       } else {
         await axios.put(`${serverUrl}/api/course/${courseId}/subject/${editingSubject._id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         });
         toast.success(`Subject updated successfully!`);
@@ -297,7 +295,6 @@ function ManageFreeCurriculum() {
           `${serverUrl}/api/course/${courseId}/subject/${selectedSubject._id}/chapter`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );
@@ -307,7 +304,6 @@ function ManageFreeCurriculum() {
           `${serverUrl}/api/course/${courseId}/subject/${selectedSubject._id}/chapter/${editingChapter._id}`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );
@@ -404,7 +400,6 @@ function ManageFreeCurriculum() {
           `${serverUrl}/api/course/${courseId}/subject/${selectedSubject._id}/chapter/${selectedChapter._id}/video`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );
@@ -414,7 +409,6 @@ function ManageFreeCurriculum() {
           `${serverUrl}/api/course/${courseId}/subject/${selectedSubject._id}/chapter/${selectedChapter._id}/video/${editingVideo._id}`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );

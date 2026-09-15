@@ -287,7 +287,6 @@ function ManageCurriculum() {
           `${serverUrl}/api/course/${courseId}/topic/${activeTopicId}/video`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );
@@ -296,7 +295,6 @@ function ManageCurriculum() {
           `${serverUrl}/api/course/${courseId}/topic/${activeTopicId}/video/${editingVideo._id}`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );

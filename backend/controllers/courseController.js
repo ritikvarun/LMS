@@ -294,8 +294,12 @@ export const editLecture = async (req,res) => {
         }
         let videoUrl
         if(req.file){
-            videoUrl = await uploadOnBunny(req.file.path, lectureTitle || lecture.lectureTitle)
-            lecture.videoUrl = videoUrl
+            try {
+                videoUrl = await uploadOnBunny(req.file.path, lectureTitle || lecture.lectureTitle)
+                lecture.videoUrl = videoUrl
+            } catch (bErr) {
+                console.error("Bunny video upload error in editLecture:", bErr?.message || bErr);
+            }
         }
         if(lectureTitle){
             lecture.lectureTitle = lectureTitle
@@ -464,7 +468,11 @@ export const addSubject = async (req, res) => {
 
         let thumbnail = thumbnailStr || "";
         if (req.file) {
-            thumbnail = await uploadOnCloudinary(req.file.path);
+            try {
+                thumbnail = await uploadOnCloudinary(req.file.path);
+            } catch (uErr) {
+                console.warn("Cloudinary thumbnail upload error:", uErr?.message || uErr);
+            }
         }
 
         const course = await Course.findById(courseId);
@@ -504,7 +512,11 @@ export const editSubject = async (req, res) => {
         if (title) subject.title = title;
         if (thumbnailStr) subject.thumbnail = thumbnailStr;
         if (req.file) {
-            subject.thumbnail = await uploadOnCloudinary(req.file.path);
+            try {
+                subject.thumbnail = await uploadOnCloudinary(req.file.path);
+            } catch (uErr) {
+                console.warn("Cloudinary thumbnail upload error:", uErr?.message || uErr);
+            }
         }
 
         await course.save();
@@ -552,7 +564,11 @@ export const addChapter = async (req, res) => {
 
         let thumbnail = thumbnailStr || subject.thumbnail || "";
         if (req.file) {
-            thumbnail = await uploadOnCloudinary(req.file.path);
+            try {
+                thumbnail = await uploadOnCloudinary(req.file.path);
+            } catch (uErr) {
+                console.warn("Cloudinary chapter thumbnail error:", uErr?.message || uErr);
+            }
         }
 
         subject.chapters.push({
@@ -592,7 +608,11 @@ export const editChapter = async (req, res) => {
         if (title) chapter.title = title;
         if (thumbnailStr) chapter.thumbnail = thumbnailStr;
         if (req.file) {
-            chapter.thumbnail = await uploadOnCloudinary(req.file.path);
+            try {
+                chapter.thumbnail = await uploadOnCloudinary(req.file.path);
+            } catch (uErr) {
+                console.warn("Cloudinary chapter thumbnail error:", uErr?.message || uErr);
+            }
         }
 
         await course.save();
@@ -655,13 +675,25 @@ export const addVideo = async (req, res) => {
 
         if (req.files) {
             if (req.files.video && req.files.video[0]) {
-                videoUrl = await uploadOnBunny(req.files.video[0].path, title);
+                try {
+                    videoUrl = await uploadOnBunny(req.files.video[0].path, title);
+                } catch (bErr) {
+                    console.error("Bunny video upload error:", bErr?.message || bErr);
+                }
             }
             if (req.files.pdf && req.files.pdf[0]) {
-                pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+                try {
+                    pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+                } catch (pErr) {
+                    console.error("PDF upload error:", pErr?.message || pErr);
+                }
             }
             if (req.files.thumbnail && req.files.thumbnail[0]) {
-                thumbnail = await uploadOnCloudinary(req.files.thumbnail[0].path, "image");
+                try {
+                    thumbnail = await uploadOnCloudinary(req.files.thumbnail[0].path, "image");
+                } catch (tErr) {
+                    console.error("Thumbnail upload error:", tErr?.message || tErr);
+                }
             }
         }
 
@@ -714,13 +746,25 @@ export const editVideo = async (req, res) => {
 
         if (req.files) {
             if (req.files.video && req.files.video[0]) {
-                video.videoUrl = await uploadOnBunny(req.files.video[0].path, title || video.title);
+                try {
+                    video.videoUrl = await uploadOnBunny(req.files.video[0].path, title || video.title);
+                } catch (bErr) {
+                    console.error("Bunny video upload error:", bErr?.message || bErr);
+                }
             }
             if (req.files.pdf && req.files.pdf[0]) {
-                video.pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+                try {
+                    video.pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+                } catch (pErr) {
+                    console.error("PDF upload error:", pErr?.message || pErr);
+                }
             }
             if (req.files.thumbnail && req.files.thumbnail[0]) {
-                video.thumbnail = await uploadOnCloudinary(req.files.thumbnail[0].path, "image");
+                try {
+                    video.thumbnail = await uploadOnCloudinary(req.files.thumbnail[0].path, "image");
+                } catch (tErr) {
+                    console.error("Thumbnail upload error:", tErr?.message || tErr);
+                }
             }
         }
 
@@ -975,10 +1019,18 @@ export const addVideoToTopic = async (req, res) => {
 
     if (req.files) {
       if (req.files.video && req.files.video[0]) {
-        videoUrl = await uploadOnBunny(req.files.video[0].path, title);
+        try {
+          videoUrl = await uploadOnBunny(req.files.video[0].path, title);
+        } catch (bErr) {
+          console.error("Video upload error:", bErr?.message || bErr);
+        }
       }
       if (req.files.pdf && req.files.pdf[0]) {
-        pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+        try {
+          pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+        } catch (pErr) {
+          console.error("PDF upload error:", pErr?.message || pErr);
+        }
       }
     }
 
@@ -1030,10 +1082,18 @@ export const editVideoInTopic = async (req, res) => {
 
     if (req.files) {
       if (req.files.video && req.files.video[0]) {
-        video.videoUrl = await uploadOnBunny(req.files.video[0].path, title || video.title);
+        try {
+          video.videoUrl = await uploadOnBunny(req.files.video[0].path, title || video.title);
+        } catch (bErr) {
+          console.error("Video upload error:", bErr?.message || bErr);
+        }
       }
       if (req.files.pdf && req.files.pdf[0]) {
-        video.pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+        try {
+          video.pdfUrl = await uploadOnCloudinary(req.files.pdf[0].path, "auto");
+        } catch (pErr) {
+          console.error("PDF upload error:", pErr?.message || pErr);
+        }
       }
     }
 
