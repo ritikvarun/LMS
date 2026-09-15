@@ -37,7 +37,7 @@ import AdminPaidCourses from './pages/admin/AdminPaidCourses'
 import ManageBooks from './pages/admin/ManageBooks'
 
 export const serverUrl = (
-  import.meta.env.VITE_SERVER_URL || 
+  (import.meta.env.VITE_SERVER_URL || "").replace(/^["']|["']$/g, "").trim() || 
   (import.meta.env.MODE === "development" ? "http://localhost:8000" : "https://lms-jcpg.onrender.com")
 ).replace(/\/+$/, "");
 

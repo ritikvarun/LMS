@@ -190,7 +190,7 @@ function ViewCourse() {
       }
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: (import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_SAm2BWLJC811rT").replace(/^["']|["']$/g, "").trim(),
         amount: orderData.data.amount,
         currency: "INR",
         name: "CodeCrafters Academy",
