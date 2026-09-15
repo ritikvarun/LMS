@@ -59,20 +59,15 @@ const DEMO_BOOKS = [
   },
 ];
 
-// Fetch all books (with automatic 6 demo books seeding if database is empty)
+// Fetch all books
 export const getAllBooks = async (req, res) => {
   try {
-    let books = await Book.find().sort({ createdAt: -1 });
-
-    if (books.length === 0) {
-      console.log("No books found. Auto-seeding 6 demo books...");
-      books = await Book.insertMany(DEMO_BOOKS);
-    }
+    const books = await Book.find().sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
-      books,
-      count: books.length,
+      books: books || [],
+      count: books ? books.length : 0,
     });
   } catch (error) {
     console.error("Error fetching books:", error);

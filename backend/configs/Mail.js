@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 
 const sendMail = async (to, otp) => {
-    transporter.sendMail({
+    return await transporter.sendMail({
         from: `"CodeCrafters Academy" <${process.env.EMAIL}>`,
         to: to,
         subject: "CodeCrafters - Reset Your Password",

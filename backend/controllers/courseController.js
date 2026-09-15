@@ -3,6 +3,8 @@ import { uploadOnBunny, deleteFromBunny } from "../configs/bunny.js"
 import Course from "../models/courseModel.js"
 import Lecture from "../models/lectureModel.js"
 import User from "../models/userModel.js"
+import LiveClass from "../models/liveClassModel.js"
+import MockTest from "../models/mockTestModel.js"
 
 // create Courses
 export const createCourse = async (req,res) => {
@@ -136,11 +138,27 @@ export const removeCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
+    // 1. Remove all lecture documents associated with this course
+    if (course.lectures && course.lectures.length > 0) {
+      await Lecture.deleteMany({ _id: { $in: course.lectures } });
+    }
+
+    // 2. Remove courseId from all enrolled users' enrolledCourses array
+    await User.updateMany(
+      { enrolledCourses: courseId },
+      { $pull: { enrolledCourses: courseId } }
+    );
+
+    // 3. Remove all live classes and mock tests linked to this course
+    await LiveClass.deleteMany({ courseId });
+    await MockTest.deleteMany({ courseId });
+
+    // 4. Delete the course itself
     await course.deleteOne();
-    return res.status(200).json({ message: "Course Removed Successfully" });
+    return res.status(200).json({ message: "Course and associated resources removed successfully" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({message:`Failed to remove course ${error}`})
+    return res.status(500).json({ message: `Failed to remove course: ${error.message || error}` });
   }
 };
 

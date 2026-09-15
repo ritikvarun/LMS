@@ -95,7 +95,7 @@ function ViewLecture() {
     if (selectedCourse && userData) {
       const isCreator = userData?._id === selectedCourse.creator || userData?.role === "educator";
       const isEnrolled = userData?.enrolledCourses?.some(
-        (c) => (c._id || c).toString() === courseId.toString()
+        (c) => c && (c._id || c).toString() === courseId.toString()
       ) || selectedCourse.isEnrolled === true;
       const isFree = !selectedCourse.price || Number(selectedCourse.price) <= 0 || selectedCourse.isFree === true;
 

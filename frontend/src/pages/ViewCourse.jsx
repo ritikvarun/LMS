@@ -79,6 +79,7 @@ function ViewCourse() {
 
   const checkEnrollment = () => {
     const verify = userData?.enrolledCourses?.some((c) => {
+      if (!c) return false;
       const enrolledId = typeof c === 'string' ? c : c._id;
       return enrolledId?.toString() === courseId?.toString();
     });

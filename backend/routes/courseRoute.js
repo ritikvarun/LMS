@@ -40,6 +40,7 @@ let courseRouter = express.Router()
 // Existing Course Routes
 courseRouter.post("/create",isAuth,createCourse)
 courseRouter.get("/getpublishedcoures",getPublishedCourses)
+courseRouter.get("/getpublishedcourses",getPublishedCourses)
 courseRouter.get("/getcreatorcourses",isAuth,getCreatorCourses)
 courseRouter.post("/editcourse/:courseId",isAuth,upload.single("thumbnail"),editCourse)
 courseRouter.get("/getcourse/:courseId",isAuth,getCourseById)

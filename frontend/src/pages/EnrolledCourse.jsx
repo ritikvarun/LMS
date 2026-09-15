@@ -17,16 +17,18 @@ function EnrolledCourse() {
   const [loadingLive, setLoadingLive] = useState(false);
   const [filterTab, setFilterTab] = useState("all"); // 'all' | 'paid' | 'free'
 
-  const enrolledCourses = userData?.enrolledCourses || [];
+  const enrolledCourses = useMemo(() => {
+    return (userData?.enrolledCourses || []).filter(Boolean);
+  }, [userData?.enrolledCourses]);
 
   // Separate Paid vs Free enrolled courses
   const { paidEnrolled, freeEnrolled } = useMemo(() => {
-    const list = enrolledCourses || [];
+    const list = enrolledCourses;
     const paid = list.filter(
-      (c) => Number(c.price) > 0 && c.isFree !== true && c.isFree !== "true"
+      (c) => c && Number(c.price) > 0 && c.isFree !== true && c.isFree !== "true"
     );
     const free = list.filter(
-      (c) => !c.price || Number(c.price) <= 0 || c.isFree === true || c.isFree === "true"
+      (c) => c && (!c.price || Number(c.price) <= 0 || c.isFree === true || c.isFree === "true")
     );
     return { paidEnrolled: paid, freeEnrolled: free };
   }, [enrolledCourses]);

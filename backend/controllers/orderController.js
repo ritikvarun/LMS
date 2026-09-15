@@ -2,6 +2,7 @@ import crypto from "crypto";
 import Course from "../models/courseModel.js";
 import razorpay from "razorpay";
 import User from "../models/userModel.js";
+import Order from "../models/orderModel.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -193,6 +194,23 @@ export const verifyPayment = async (req, res) => {
     }
 
     await Course.findByIdAndUpdate(courseId, courseUpdateFields);
+
+    // 4. Save order audit record in Order model
+    try {
+      await Order.create({
+        course: courseId,
+        student: userId,
+        razorpay_order_id,
+        razorpay_payment_id: razorpay_payment_id || "direct",
+        razorpay_signature: razorpay_signature || "verified",
+        amount: course.price || 0,
+        currency: "INR",
+        isPaid: true,
+        paidAt: new Date(),
+      });
+    } catch (orderSaveErr) {
+      console.warn("Notice: Order record save error (enrollment still successful):", orderSaveErr.message);
+    }
 
     return res.status(200).json({
       success: true,
