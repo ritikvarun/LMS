@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { FiBookOpen, FiLayers, FiPlus, FiGift, FiAward } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { serverUrl } from "../../App";
+import { serverUrl } from "../App";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import AdminLayout from "./AdminLayout";

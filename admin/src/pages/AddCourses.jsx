@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import img from "../../assets/empty.jpg";
+import img from "../assets/empty.jpg";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate, useParams } from 'react-router-dom';
-import { serverUrl } from '../../App';
+import { serverUrl } from '../App';
 import { MdEdit } from "react-icons/md";
 import { FiUploadCloud, FiTrash2, FiEye, FiCheck, FiVideo, FiLayers, FiGift, FiAward, FiBookOpen } from "react-icons/fi";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { ClipLoader } from 'react-spinners';
-import { setCourseData, setCreatorCourseData } from '../../redux/courseSlice';
+import { setCourseData, setCreatorCourseData } from '../redux/courseSlice';
 import AdminLayout from './AdminLayout';
 
 function AddCourses() {

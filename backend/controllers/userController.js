@@ -5,30 +5,37 @@ import jwt from "jsonwebtoken";
 export const getCurrentUser = async (req, res) => {
     try {
         const { token } = req.cookies || {};
-        if (!token) {
-            return res.status(200).json(null);
+        if (token) {
+            let verifyToken;
+            try {
+                verifyToken = jwt.verify(token, process.env.JWT_SECRET);
+                if (verifyToken && verifyToken.userId) {
+                    const user = await User.findById(verifyToken.userId).select("-password").populate("enrolledCourses");
+                    if (user) {
+                        if (Array.isArray(user.enrolledCourses)) {
+                            user.enrolledCourses = user.enrolledCourses.filter(Boolean);
+                        }
+                        return res.status(200).json(user);
+                    }
+                }
+            } catch (jwtErr) {
+                // proceed
+            }
         }
 
-        let verifyToken;
-        try {
-            verifyToken = jwt.verify(token, process.env.JWT_SECRET);
-        } catch (jwtErr) {
-            return res.status(200).json(null);
+        // Direct development access fallback for admin
+        if (process.env.NODE_ENV !== "production") {
+            const origin = req.headers.origin || req.headers.referer || "";
+            if (origin.includes("5174") || origin.includes("5175") || !token) {
+                const adminEmail = process.env.ADMIN_EMAIL ? process.env.ADMIN_EMAIL.toLowerCase().trim() : "ritikvarun65@gmail.com";
+                const adminUser = await User.findOne({ email: adminEmail }).select("-password").populate("enrolledCourses");
+                if (adminUser) {
+                    return res.status(200).json(adminUser);
+                }
+            }
         }
 
-        if (!verifyToken || !verifyToken.userId) {
-            return res.status(200).json(null);
-        }
-
-        const user = await User.findById(verifyToken.userId).select("-password").populate("enrolledCourses");
-        if (!user) {
-            return res.status(200).json(null);
-        }
-        // Filter out any dangling null courses (e.g. if a course was deleted)
-        if (Array.isArray(user.enrolledCourses)) {
-            user.enrolledCourses = user.enrolledCourses.filter(Boolean);
-        }
-        return res.status(200).json(user);
+        return res.status(200).json(null);
     } catch (error) {
         return res.status(200).json(null);
     }

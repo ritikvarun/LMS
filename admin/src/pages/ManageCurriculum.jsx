@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { serverUrl } from '../../App';
+import { serverUrl } from '../App';
 import { toast } from 'react-toastify';
 import { 
   FiPlus, 

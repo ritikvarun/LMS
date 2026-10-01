@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { serverUrl } from '../../App';
+import { serverUrl } from '../App';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import {

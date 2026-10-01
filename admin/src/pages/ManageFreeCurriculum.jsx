@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { serverUrl } from '../../App';
+import { serverUrl } from '../App';
 import { toast } from 'react-toastify';
 import { 
   FiPlus, 
@@ -24,7 +24,7 @@ import {
 import { FaTelegramPlane } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
 import AdminLayout from './AdminLayout';
-import emptyImg from '../../assets/empty.jpg';
+import emptyImg from '../assets/empty.jpg';
 
 function ManageFreeCurriculum() {
   const { courseId } = useParams();

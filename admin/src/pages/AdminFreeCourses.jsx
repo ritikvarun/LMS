@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { serverUrl } from '../../App';
-import { setCreatorCourseData } from '../../redux/courseSlice';
+import { serverUrl } from '../App';
+import { setCreatorCourseData } from '../redux/courseSlice';
 import AdminLayout from './AdminLayout';
 import { toast } from 'react-toastify';
 import { 
@@ -18,7 +18,7 @@ import {
   FiGift
 } from 'react-icons/fi';
 import { ClipLoader } from 'react-spinners';
-import emptyImg from '../../assets/empty.jpg';
+import emptyImg from '../assets/empty.jpg';
 
 function AdminFreeCourses() {
   const navigate = useNavigate();

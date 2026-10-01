@@ -24,19 +24,23 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }))
 app.use(cookieParser())
 app.use("/public", express.static("public"))
 
-// Dynamic CORS configuration allowing localhost, local IP, FRONTEND_URL, Vercel, and Render domains
+// Dynamic CORS configuration allowing localhost, local IP, FRONTEND_URL, ADMIN_URL, Vercel, and Render domains
 const allowedOrigins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
     "http://localhost:3000",
     "http://localhost:4173",
-    process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/+$/, "") : null
+    process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/+$/, "") : null,
+    process.env.ADMIN_URL ? process.env.ADMIN_URL.replace(/\/+$/, "") : null
 ].filter(Boolean)
 
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
         if (
+            /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
             allowedOrigins.includes(origin) ||
             /^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/.test(origin) ||
             /^https:\/\/[a-zA-Z0-9_-]+\.onrender\.com$/.test(origin)

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { serverUrl } from '../../App';
+import { serverUrl } from '../App';
 import AdminLayout from './AdminLayout';
 import { toast } from 'react-toastify';
 import { 

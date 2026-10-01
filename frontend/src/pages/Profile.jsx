@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaEdit } from "react-icons/fa";
-import { FiMail, FiBookOpen, FiUser, FiCheckCircle, FiLayout } from "react-icons/fi";
+import { FiMail, FiBookOpen, FiUser, FiCheckCircle } from "react-icons/fi";
 import Nav from '../components/Nav';
 
 function Profile() {
@@ -65,14 +65,6 @@ function Profile() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-3">
-                {isEducator && (
-                  <button
-                    onClick={() => navigate("/dashboard")}
-                    className="px-4 py-2.5 bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold rounded-xl text-xs sm:text-sm transition flex items-center gap-2 cursor-pointer"
-                  >
-                    <FiLayout /> Instructor Studio
-                  </button>
-                )}
                 <button
                   onClick={() => navigate("/editprofile")}
                   className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 cursor-pointer"

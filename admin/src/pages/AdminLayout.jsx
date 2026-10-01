@@ -18,10 +18,10 @@ import {
   FiExternalLink,
   FiUser
 } from 'react-icons/fi';
-import Logo from '../../components/Logo';
-import { serverUrl } from '../../App';
+import Logo from '../components/Logo';
+import { serverUrl } from '../App';
 import axios from 'axios';
-import { setUserData } from '../../redux/userSlice';
+import { setUserData } from '../redux/userSlice';
 import { toast } from 'react-toastify';
 
 function AdminLayout({ children, activeTab = "dashboard" }) {
@@ -32,6 +32,7 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
   const { creatorCourseData } = useSelector((state) => state.course);
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const websiteUrl = (import.meta.env.VITE_WEBSITE_URL || "http://localhost:5173").replace(/\/+$/, "");
 
   // Lock body scroll when mobile drawer is open
   useEffect(() => {
@@ -62,11 +63,11 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
     try {
       await axios.get(`${serverUrl}/api/auth/logout`, { withCredentials: true });
       dispatch(setUserData(null));
-      navigate("/");
+      navigate("/login");
       toast.success("Logged out successfully");
     } catch (error) {
       dispatch(setUserData(null));
-      navigate("/");
+      navigate("/login");
     }
   };
 
@@ -121,7 +122,7 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
         
         {/* Brand / Logo Header */}
         <div className="p-6 pb-5 border-b border-gray-100 flex items-center justify-between">
-          <div className="cursor-pointer" onClick={() => navigate("/")}>
+          <div className="cursor-pointer" onClick={() => navigate("/dashboard")}>
             <Logo />
           </div>
           <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 border border-gray-200">
@@ -167,8 +168,10 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
             </span>
           </div>
 
-          <button
-            onClick={() => navigate("/freecourses")}
+          <a
+            href={`${websiteUrl}/freecourses`}
+            target="_blank"
+            rel="noreferrer"
             className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:text-indigo-600 hover:bg-gray-100/80 transition cursor-pointer"
           >
             <div className="flex items-center gap-2.5">
@@ -176,17 +179,17 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
               <span>Public Free Courses</span>
             </div>
             <span className="text-[10px] text-gray-400">↗</span>
-          </button>
+          </a>
 
-          <button
-            onClick={() => navigate("/")}
+          <a
+            href={websiteUrl}
             className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:text-indigo-600 hover:bg-gray-100/80 transition cursor-pointer"
           >
             <div className="flex items-center gap-2.5">
               <FiArrowLeft className="text-sm text-gray-400" />
               <span>Back to Website</span>
             </div>
-          </button>
+          </a>
         </nav>
 
         {/* User Identity Footer */}
@@ -277,15 +280,13 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
               })}
 
               <div className="pt-4">
-                <button
-                  onClick={() => {
-                    setIsMobileOpen(false);
-                    navigate("/");
-                  }}
+                <a
+                  href={websiteUrl}
+                  onClick={() => setIsMobileOpen(false)}
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 cursor-pointer"
                 >
                   <FiArrowLeft /> Back to Website
-                </button>
+                </a>
               </div>
             </nav>
 
@@ -324,15 +325,17 @@ function AdminLayout({ children, activeTab = "dashboard" }) {
             >
               <FiMenu className="text-xl" />
             </button>
-            <Logo />
+            <div className="cursor-pointer" onClick={() => navigate("/dashboard")}>
+              <Logo />
+            </div>
           </div>
 
-          <button
-            onClick={() => navigate("/")}
+          <a
+            href={websiteUrl}
             className="px-3 py-1.5 text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl"
           >
             Website ↗
-          </button>
+          </a>
         </header>
 
         {/* Child Page Content */}

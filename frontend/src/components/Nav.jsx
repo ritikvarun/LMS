@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import Logo from './Logo';
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { HiSparkles } from "react-icons/hi2";
-import { FiBookOpen, FiUser, FiLogOut, FiLayout, FiChevronDown, FiGift, FiAward, FiSearch, FiX } from "react-icons/fi";
+import { FiBookOpen, FiUser, FiLogOut, FiChevronDown, FiGift, FiAward, FiSearch, FiX } from "react-icons/fi";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { serverUrl } from '../App';
 import axios from 'axios';
@@ -199,20 +199,6 @@ function Nav() {
                 FREE
               </span>
             </button>
-
-            {userData?.role === "educator" && (
-              <button
-                onClick={() => navigate("/dashboard")}
-                className={`px-2.5 xl:px-3 py-1.5 xl:py-2 rounded-lg text-xs xl:text-sm font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
-                  isActive("/dashboard") 
-                    ? "text-indigo-600 bg-indigo-50/70 font-semibold" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
-                }`}
-              >
-                <FiLayout className="text-xs xl:text-sm opacity-70" />
-                <span>Studio</span>
-              </button>
-            )}
           </nav>
 
           {/* Mobile Search Icon Toggle (< sm only) */}
@@ -293,15 +279,6 @@ function Nav() {
                       </div>
 
                       <div className="py-1">
-                        {userData.role === "educator" && (
-                          <button
-                            onClick={() => navigate("/dashboard")}
-                            className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition text-left cursor-pointer"
-                          >
-                            <FiLayout className="text-base text-gray-400" />
-                            Instructor Dashboard
-                          </button>
-                        )}
                         <button
                           onClick={() => navigate("/profile")}
                           className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition text-left cursor-pointer"
@@ -511,15 +488,6 @@ function Nav() {
                       <FiBookOpen className="text-base text-gray-400" />
                       <span>My Courses</span>
                     </button>
-                    {userData.role === "educator" && (
-                      <button
-                        onClick={() => { setShowHam(false); navigate("/dashboard"); }}
-                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition text-left cursor-pointer"
-                      >
-                        <FiLayout className="text-base text-indigo-600" />
-                        <span>Instructor Studio</span>
-                      </button>
-                    )}
                   </>
                 )}
               </div>

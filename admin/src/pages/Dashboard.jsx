@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { serverUrl } from '../../App';
-import { setCreatorCourseData } from '../../redux/courseSlice';
+import { serverUrl } from '../App';
+import { setCreatorCourseData } from '../redux/courseSlice';
 import AdminLayout from './AdminLayout';
 import { 
   BarChart, 
@@ -26,7 +26,7 @@ import {
   FiCreditCard
 } from "react-icons/fi";
 import { FaGraduationCap, FaIndianRupeeSign } from "react-icons/fa6";
-import emptyImg from "../../assets/empty.jpg";
+import emptyImg from "../assets/empty.jpg";
 
 // Custom Tooltip for Charts
 const CustomTooltip = ({ active, payload, label }) => {

@@ -3,7 +3,7 @@ import Logo from '../components/Logo';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { MdOutlineRemoveRedEye, MdRemoveRedEye } from "react-icons/md";
-import { FiUser, FiMail, FiLock, FiKey, FiArrowRight } from "react-icons/fi";
+import { FiUser, FiMail, FiLock, FiArrowRight } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../../utils/Firebase';
@@ -16,8 +16,6 @@ function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isEducator, setIsEducator] = useState(false);
-  const [adminSecret, setAdminSecret] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -29,10 +27,6 @@ function SignUp() {
       toast.warn("Please fill in all required fields.");
       return;
     }
-    if (isEducator && !adminSecret) {
-      toast.warn("Instructor passcode is required to register as educator.");
-      return;
-    }
 
     setLoading(true);
     try {
@@ -40,8 +34,7 @@ function SignUp() {
         name,
         email,
         password,
-        role: isEducator ? "educator" : "student",
-        adminSecret: isEducator ? adminSecret : undefined,
+        role: "student",
       };
 
       const result = await axios.post(
@@ -166,44 +159,6 @@ function SignUp() {
                     {show ? <MdRemoveRedEye className="text-lg" /> : <MdOutlineRemoveRedEye className="text-lg" />}
                   </button>
                 </div>
-              </div>
-
-              {/* Educator Checkbox & Passcode */}
-              <div className="pt-1">
-                <label className="flex items-center gap-2.5 text-xs text-gray-600 hover:text-gray-900 cursor-pointer select-none font-medium">
-                  <input
-                    type="checkbox"
-                    checked={isEducator}
-                    onChange={(e) => {
-                      setIsEducator(e.target.checked);
-                      if (!e.target.checked) setAdminSecret("");
-                    }}
-                    className="w-4 h-4 rounded text-indigo-600 accent-indigo-600 cursor-pointer"
-                  />
-                  <span>Register as an Instructor / Educator</span>
-                </label>
-
-                {isEducator && (
-                  <div className="mt-3 p-3 bg-purple-50/70 border border-purple-200 rounded-xl animate-in fade-in duration-200">
-                    <label className="block text-[11px] font-bold text-purple-900 uppercase tracking-wider mb-1">
-                      Instructor Secret Passcode
-                    </label>
-                    <div className="relative flex items-center">
-                      <FiKey className="absolute left-3 text-purple-400 text-sm" />
-                      <input
-                        type="password"
-                        placeholder="Enter admin passcode"
-                        className="w-full pl-9 pr-3 py-2 bg-white border border-purple-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-purple-500/20"
-                        value={adminSecret}
-                        onChange={(e) => setAdminSecret(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <p className="text-[10px] text-purple-600 mt-1">
-                      Provided by the platform administrator for authorized educators.
-                    </p>
-                  </div>
-                )}
               </div>
 
               {/* Submit Button */}
