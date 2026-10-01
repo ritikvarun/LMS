@@ -24,7 +24,10 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }))
 app.use(cookieParser())
 app.use("/public", express.static("public"))
 
-// Dynamic CORS configuration allowing localhost, local IP, FRONTEND_URL, ADMIN_URL, Vercel, and Render domains
+// Helper to clean environment URLs (remove quotes, whitespace, and trailing slashes)
+const cleanUrl = (url) => (url || "").replace(/^["']|["']$/g, "").trim().replace(/\/+$/, "");
+
+// Dynamic CORS configuration allowing localhost, local IP, FRONTEND_URL, ADMIN_URL, Vercel, Netlify, and Render domains
 const allowedOrigins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -32,26 +35,37 @@ const allowedOrigins = [
     "http://127.0.0.1:5174",
     "http://localhost:3000",
     "http://localhost:4173",
-    process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/+$/, "") : null,
-    process.env.ADMIN_URL ? process.env.ADMIN_URL.replace(/\/+$/, "") : null
-].filter(Boolean)
+    cleanUrl(process.env.FRONTEND_URL),
+    cleanUrl(process.env.ADMIN_URL)
+].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps, curl, server-to-server)
         if (!origin) return callback(null, true);
-        if (
-            /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
-            allowedOrigins.includes(origin) ||
-            /^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/.test(origin) ||
-            /^https:\/\/[a-zA-Z0-9_-]+\.onrender\.com$/.test(origin)
-        ) {
+
+        // Normalize origin: remove trailing slash
+        const normalizedOrigin = origin.replace(/\/+$/, "");
+
+        const isAllowed =
+            /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(normalizedOrigin) ||
+            allowedOrigins.includes(normalizedOrigin) ||
+            /^https?:\/\/([a-zA-Z0-9-]+\.)*vercel\.app$/.test(normalizedOrigin) ||
+            /^https?:\/\/([a-zA-Z0-9-]+\.)*netlify\.app$/.test(normalizedOrigin) ||
+            /^https?:\/\/([a-zA-Z0-9-]+\.)*onrender\.com$/.test(normalizedOrigin) ||
+            /^https?:\/\/([a-zA-Z0-9-]+\.)*pages\.dev$/.test(normalizedOrigin);
+
+        if (isAllowed) {
             return callback(null, true);
         }
+
+        console.warn(`[CORS Blocked] Origin not allowed: ${origin}`);
         return callback(null, false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+    optionsSuccessStatus: 200
 }))
 
 app.use((req, res, next) => {

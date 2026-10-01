@@ -38,7 +38,7 @@ export const signUp=async (req,res)=>{
             }
         }
 
-        const isProduction = process.env.NODE_ENV === "production";
+        const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
         const cookieOptions = {
             httpOnly: true,
             secure: isProduction,
@@ -75,7 +75,7 @@ export const login=async(req,res)=>{
             return res.status(400).json({message:"incorrect Password"})
         }
         let token =await genToken(user._id)
-        const isProduction = process.env.NODE_ENV === "production";
+        const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
         res.cookie("token", token, {
             httpOnly: true,
             secure: isProduction,
@@ -95,7 +95,7 @@ export const login=async(req,res)=>{
 
 export const logOut = async(req,res)=>{
     try {
-        const isProduction = process.env.NODE_ENV === "production";
+        const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
         res.clearCookie("token", {
             httpOnly: true,
             secure: isProduction,
@@ -124,7 +124,7 @@ export const googleSignup = async (req,res) => {
             })
         }
         let token =await genToken(user._id)
-        const isProduction = process.env.NODE_ENV === "production";
+        const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
         res.cookie("token", token, {
             httpOnly: true,
             secure: isProduction,
