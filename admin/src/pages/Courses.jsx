@@ -36,7 +36,9 @@ function Courses() {
       dispatch(setCreatorCourseData(result.data));
     } catch (error) {
       console.log(error);
-      toast.error(error?.response?.data?.message || "Failed to load courses");
+      if (error?.response?.status !== 401) {
+        toast.error(error?.response?.data?.message || "Failed to load courses");
+      }
     } finally {
       setLoading(false);
     }

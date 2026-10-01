@@ -27,8 +27,25 @@ export const serverUrl = (
   (import.meta.env.MODE === "development" ? "http://localhost:8000" : "https://lms-jcpg.onrender.com")
 ).replace(/\/+$/, "");
 
-// Direct access without login barrier (for development & instant access)
+// Route protection: requires logged in user and token
 function ProtectedRoute({ children }) {
+  const { userData } = useSelector((state) => state.user);
+  const token = localStorage.getItem("admin_token");
+
+  if (!userData && !token) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+// Redirects already authenticated user away from /login
+function AuthRoute({ children }) {
+  const { userData } = useSelector((state) => state.user);
+  const token = localStorage.getItem("admin_token");
+
+  if (userData && token) {
+    return <Navigate to="/dashboard" replace />;
+  }
   return children;
 }
 
@@ -54,8 +71,8 @@ function App() {
       />
       <ScrollToTop />
       <Routes>
-        {/* Auth Route redirects straight to dashboard for direct access */}
-        <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+        {/* Auth Route */}
+        <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
 
         {/* Dashboard / Home */}
         <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

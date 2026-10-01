@@ -4,7 +4,10 @@ import jwt from "jsonwebtoken";
 
 export const getCurrentUser = async (req, res) => {
     try {
-        const { token } = req.cookies || {};
+        const headerToken = req.headers.authorization?.startsWith("Bearer ")
+            ? req.headers.authorization.split(" ")[1]
+            : req.headers.authorization;
+        const token = req.cookies?.token || headerToken;
         if (token) {
             let verifyToken;
             try {

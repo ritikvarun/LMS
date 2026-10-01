@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("ritikvarun65@gmail.com");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,6 +42,9 @@ function Login() {
         return;
       }
 
+      if (user.token) {
+        localStorage.setItem("admin_token", user.token);
+      }
       dispatch(setUserData(user));
       toast.success(`Welcome back, ${user.name || "Instructor"}!`);
       navigate("/dashboard");

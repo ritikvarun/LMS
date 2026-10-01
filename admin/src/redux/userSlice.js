@@ -7,14 +7,28 @@ export const defaultAdmin = {
     role: "educator"
 };
 
+let savedUser = null;
+try {
+  const raw = localStorage.getItem("admin_user");
+  if (raw) savedUser = JSON.parse(raw);
+} catch (e) {}
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
-        userData: defaultAdmin
+        userData: savedUser
     },
     reducers: {
         setUserData: (state, action) => {
-            state.userData = action.payload || defaultAdmin;
+            state.userData = action.payload;
+            try {
+                if (action.payload) {
+                    localStorage.setItem("admin_user", JSON.stringify(action.payload));
+                } else {
+                    localStorage.removeItem("admin_user");
+                    localStorage.removeItem("admin_token");
+                }
+            } catch (e) {}
         }
     }
 });
